@@ -38,6 +38,17 @@ class LoginController extends Controller
     // }
 
     public function register (RegisterUserRequest $request) {
+        // $user->save(); // Guardar el usuario en la base de datos
+                $data = new User ($request->input('data.attributes'));
+        // $user = User::create([
+        //     'username' => $data['username'],
+        //     'email' => $data['email'],
+        //     'password' => bcrypt($data['password']),
+        // ]);
+        $user = new User ($request->input('data.attributes'));
+        $user->save(); // Guardar el usuario en la base de datos
+        $device_name = ($request->input('data.attributes.device_name'));
+        $token = $user->createToken($device_name,['*'])->plainTextToken;
         return $request->input('data.attributes');
     }
 }
