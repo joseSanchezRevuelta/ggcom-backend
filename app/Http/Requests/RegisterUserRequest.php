@@ -22,10 +22,10 @@ class RegisterUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // 'data.attributes.username'=>'required|unique:users,username',
-            // 'data.attributes.email' => 'required|email|unique:users,email',
-            // 'data.attributes.password' => 'required|min:8|max:30|confirmed',
-            // 'data.attributes.device_name'=>'required'
+            "data.attributes.username"=>"required|unique:users,username",
+            "data.attributes.email" => "required|email|unique:users,email",
+            "data.attributes.password" => "required|min:8|max:30|confirmed",
+            "data.attributes.device_name"=>"required"
         ];
     }
 }

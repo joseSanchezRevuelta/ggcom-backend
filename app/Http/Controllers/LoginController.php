@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterUserRequest;
+use App\Http\Resources\UserResource;
 
 class LoginController extends Controller
 {
@@ -13,42 +14,16 @@ class LoginController extends Controller
 
     // }
 
-    // public function hola ($request) {
-    //     info("HOLA");
-    //     $data = new User ($request->input('data.attributes'));
-    //     //1
-    //     // $user = User::create([
-    //     //     'username' => $data['username'],
-    //     //     'email' => $data['email'],
-    //     //     'password' => bcrypt($data['password']),
-    //     // ]);
-    //     //2
-    //     // $user = new User();
-    //     // $user->username = $data['username'];
-    //     // $user->email = $data['email'];
-    //     // $user->password = bcrypt($data['password']);
-
-    //     // $user->save(); // Guardar el usuario en la base de datos
-    //     // $device_name = ($request->input('data.attributes.device_name'));
-    //     // $token = $user->createToken($device_name,['*'])->plainTextToken;
-    //     // info('LoginController@register con token -$token-');
-
-    //     // return $user;
-    //     return $data;
-    // }
-
     public function register (RegisterUserRequest $request) {
-        // $user->save(); // Guardar el usuario en la base de datos
-                $data = new User ($request->input('data.attributes'));
-        // $user = User::create([
-        //     'username' => $data['username'],
-        //     'email' => $data['email'],
-        //     'password' => bcrypt($data['password']),
-        // ]);
-        $user = new User ($request->input('data.attributes'));
-        $user->save(); // Guardar el usuario en la base de datos
-        $device_name = ($request->input('data.attributes.device_name'));
-        $token = $user->createToken($device_name,['*'])->plainTextToken;
-        return $request->input('data.attributes');
+        $user = new User ($request->input('data.attributes'));  //Creamos un nuevo user
+        $user->save();  //Le guardamos en la BD
+        $device_name = ($request->input('data.attributes.device_name'));    //Obtenemos en device_name para crear el token
+        $token = $user->createToken($device_name,['*'])->plainTextToken;    //Creamos el token
+        //Return
+        $return = (new UserResource($user))
+        ->additional(["meta"=>["token"=>$token]])
+        ->response()
+        ->setStatusCode(201);
+        return $return;
     }
 }
