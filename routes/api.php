@@ -27,21 +27,28 @@ use App\Http\Controllers\CommentsController;
 //     Route::post('joincommunity', [CommunitiesController::class, 'joinCommunity'])->name('joincommunity');
 // });
 
+//USERS
 Route::post('login', [LoginController::class,'login'])->name('login');
 
 Route::post('register', [LoginController::class,'register'])->name('register');
 
+Route::patch('updateuser', [LoginController::class,'updateUser'])->name('updateuser');
+
+Route::delete('deleteuser', [LoginController::class,'deleteUser'])->name('deleteuser');
+
+//COMMUNITIES
 Route::post('createcommunity', [CommunitiesController::class,'createCommunity'])->name('createcommunity');
 
 Route::post('joincommunity', [CommunitiesController::class,'joinCommunity'])->name('joincommunity');
 
-Route::post('leavecommunity', [CommunitiesController::class,'leaveCommunity'])->name('leavecommunity');
+Route::patch('updatecommunity', [CommunitiesController::class,'updateCommunity'])->name('updatecommunity');
 
-Route::post('deletecommunity', [CommunitiesController::class,'deleteCommunity'])->name('deletecommunity');
+Route::delete('leavecommunity', [CommunitiesController::class,'leaveCommunity'])->name('leavecommunity');
 
-Route::post('updatecommunity', [CommunitiesController::class,'updateCommunity'])->name('updatecommunity');
+Route::delete('deletecommunity', [CommunitiesController::class,'deleteCommunity'])->name('deletecommunity');
 
+//COMMENTS
 Route::post('createcomment', [CommentsController::class,'createComment'])->name('createcomment');
 
-Route::post('deletecomment', [CommentsController::class,'deleteComment'])->name('deletecomment');
+Route::delete('deletecomment', [CommentsController::class,'deleteComment'])->name('deletecomment');
 

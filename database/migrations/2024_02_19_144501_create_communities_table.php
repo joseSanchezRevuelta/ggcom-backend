@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('title', 100);
             $table->string('language', 30);
             $table->string('type', 30)->default('public');
-            $table->integer('numPerson')->default(1);
-            $table->integer('numComments')->default(1);
+            $table->integer('num_person')->default(1);
+            $table->integer('num_comments')->default(1);
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');;

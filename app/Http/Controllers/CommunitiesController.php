@@ -29,10 +29,10 @@ class CommunitiesController extends Controller
         $data = $request->input("data.attributes");
         $joinCommunity = new JoinCommunity($data);
         $joinCommunity->save();
-        // Incrementar numPerson de la tabla communities
-        // $communityId = $data['community_id']; // Obtener el ID de la comunidad
-        // $community = Community::findOrFail($communityId); // Encontrar la comunidad
-        // $community->increment('num_members'); // Incrementar el campo 'num_members' en 1
+        // Incrementar numPersons de la tabla communities
+        $communityId = $data['community_id']; // Obtener el ID de la comunidad
+        $community = Community::whereId($communityId)->first();  //Buscamos la comunidad
+        $community->increment('num_persons'); // Incrementar el campo 'num_members' en 1
         return $joinCommunity;
     }
 
@@ -45,6 +45,9 @@ class CommunitiesController extends Controller
         ->first();
         if ($joinCommunity) {
             $joinCommunity->delete();
+            // Decrementar numPersons de la tabla communities
+            $community = Community::whereId($community_id)->first();  //Buscamos la comunidad
+            $community->decrement('numPersons');
             return response()->json(['message' => 'Comunidad dejada correctamente','joinComunity' => $joinCommunity], 200);
         } else {
             return response()->json(['error' => 'No se encontró ningun user-comunidad para dejar'], 404);
