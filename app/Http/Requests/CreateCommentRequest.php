@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateCommunityRequest extends FormRequest
+class CreateCommentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,8 +23,9 @@ class CreateCommunityRequest extends FormRequest
     {
         return [
             "data.attributes.user_id"=>"required",
-            "data.attributes.title"=>"required|max:100",
-            "data.attributes.language"=>"required"
+            "data.attributes.community_id"=>"required",
+            "data.attributes.username"=>"required",
+            "data.attributes.comment' => 'required|string"
         ];
     }
 }

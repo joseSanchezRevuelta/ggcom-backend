@@ -16,9 +16,11 @@ class Community extends Model
      */
     protected $fillable = [
         'user_id',
-        'comments_id',
-        'name',
-        'language',
-        'type',
+        'title',
+        'language'
     ];
+
+    // public function comments() {
+    //     return $this->hasMany(Comment::class)->onDelete('cascade');
+    // }
 }

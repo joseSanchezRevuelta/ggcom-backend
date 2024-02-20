@@ -14,15 +14,15 @@ return new class extends Migration
         Schema::create('communities', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('comments_id');
-            $table->string('name', 30);
+            // $table->unsignedBigInteger('comments_id');
+            $table->string('title', 100);
             $table->string('language', 30);
             $table->string('type', 30)->default('public');
             $table->integer('numPerson')->default(1);
             $table->integer('numComments')->default(1);
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');;
         });
         
     }

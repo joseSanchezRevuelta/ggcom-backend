@@ -14,14 +14,4 @@ use App\Http\Controllers\CommunitiesController;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-// Route::get('ejemplo', function () {
-//     return "<h1>HOLA</h1>";
-// });
-
 Route::get('getcommunities', [CommunitiesController::class,'getCommunities']);
-
-// Route::post('register', [LoginController::class,'register'])->name('register');
