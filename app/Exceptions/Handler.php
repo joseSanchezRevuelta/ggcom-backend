@@ -69,6 +69,17 @@ class Handler extends ExceptionHandler
                 ]
             ], $exception->getStatusCode());
         }
+
+        // QueryException
+        if ($exception instanceof QueryException) {
+            return response()->json([
+                'error' => [
+                    'status' => 500,
+                    'title' => 'Database Error',
+                    'details' => 'An error occurred while processing your request.'
+                ]
+            ], 500);
+        }
     
         // Otras excepciones de tipo Throwable
         return response()->json([
