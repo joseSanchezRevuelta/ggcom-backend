@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CommunitiesController;
+use App\Http\Controllers\CommunityController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,4 +14,7 @@ use App\Http\Controllers\CommunitiesController;
 |
 */
 
-Route::get('getcommunities', [CommunitiesController::class,'getCommunities']);
+Route::get('communities', [CommunityController::class,'getCommunities']);    //Popular
+
+Route::get('communities/language', [CommunityController::class, 'getCommunitiesLanguage']);  //Language
+

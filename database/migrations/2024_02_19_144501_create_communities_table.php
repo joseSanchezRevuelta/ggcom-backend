@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('title', 100);
             $table->string('language', 30);
             $table->string('type', 30)->default('public');
-            $table->integer('num_person')->default(1);
+            $table->integer('num_persons')->default(1);
             $table->integer('num_comments')->default(1);
             $table->timestamps();
 

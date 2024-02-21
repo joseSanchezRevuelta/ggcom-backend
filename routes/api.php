@@ -2,9 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\CommunitiesController;
-use App\Http\Controllers\CommentsController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\CommunityController;
+use App\Http\Controllers\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,32 +23,38 @@ use App\Http\Controllers\CommentsController;
 
 // Route::middleware('auth:sanctum')->group(function () {
 //     // Rutas protegidas que requieren autenticación
-//     Route::post('createcommunity', [CommunitiesController::class, 'createCommunity'])->name('createcommunity');
-//     Route::post('joincommunity', [CommunitiesController::class, 'joinCommunity'])->name('joincommunity');
+//     Route::post('createcommunity', [CommunityController::class, 'createCommunity'])->name('createcommunity');
+//     Route::post('joincommunity', [CommunityController::class, 'joinCommunity'])->name('joincommunity');
 // });
 
 //USERS
-Route::post('login', [LoginController::class,'login'])->name('login');
+Route::post('login', [UserController::class,'login'])->name('login');
 
-Route::post('register', [LoginController::class,'register'])->name('register');
+Route::post('register', [UserController::class,'register'])->name('register');
 
-Route::patch('updateuser', [LoginController::class,'updateUser'])->name('updateuser');
+// Route::patch('updateusername', [UserController::class,'updateUserName'])->name('updateusername');  //
 
-Route::delete('deleteuser', [LoginController::class,'deleteUser'])->name('deleteuser');
+// Route::patch('updateuseravatar', [UserController::class,'updateUserAvatar'])->name('updateuseravatar');  //
+
+// Route::patch('updateuseremail', [UserController::class,'updateUserEmail'])->name('updateuseremail');  //
+
+// Route::patch('updateuserpassword', [UserController::class,'updateUserPassword'])->name('updateuserpassword');  //
+
+Route::delete('deleteuser', [UserController::class,'deleteUser'])->name('deleteuser'); //
 
 //COMMUNITIES
-Route::post('createcommunity', [CommunitiesController::class,'createCommunity'])->name('createcommunity');
+Route::post('createcommunity', [CommunityController::class,'createCommunity'])->name('createcommunity');
 
-Route::post('joincommunity', [CommunitiesController::class,'joinCommunity'])->name('joincommunity');
+Route::post('joincommunity', [CommunityController::class,'joinCommunity'])->name('joincommunity');
 
-Route::patch('updatecommunity', [CommunitiesController::class,'updateCommunity'])->name('updatecommunity');
+Route::patch('updatecommunity', [CommunityController::class,'updateCommunity'])->name('updatecommunity');
 
-Route::delete('leavecommunity', [CommunitiesController::class,'leaveCommunity'])->name('leavecommunity');
+Route::delete('leavecommunity', [CommunityController::class,'leaveCommunity'])->name('leavecommunity');
 
-Route::delete('deletecommunity', [CommunitiesController::class,'deleteCommunity'])->name('deletecommunity');
+Route::delete('deletecommunity', [CommunityController::class,'deleteCommunity'])->name('deletecommunity');
 
 //COMMENTS
-Route::post('createcomment', [CommentsController::class,'createComment'])->name('createcomment');
+Route::post('createcomment', [CommentController::class,'createComment'])->name('createcomment');
 
-Route::delete('deletecomment', [CommentsController::class,'deleteComment'])->name('deletecomment');
+Route::delete('deletecomment', [CommentController::class,'deleteComment'])->name('deletecomment');
 

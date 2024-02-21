@@ -9,7 +9,7 @@ use App\Http\Requests\RegisterUserRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
 
-class LoginController extends Controller
+class UserController extends Controller
 {
     public function login (LoginUserRequest $request) {
         $data = $request->input("data.attributes");
@@ -46,5 +46,21 @@ class LoginController extends Controller
         ->response()
         ->setStatusCode(201);
         return $return;
+    }
+
+    public function updateUser (UpdateUserRequest $request) {
+        $data = $request->input("data.attributes");
+        $id = $data['id'];
+        $title = $data['title'];
+        $language = $data['language'];
+        $community = Community::whereId($id)->first();  //Buscamos la comunidad
+        if ($community) {
+            $community->title = $title;
+            $community->language = $language;
+            $community->save();
+            return response()->json(['message' => 'Comunidad actualizada correctamente','communidad' => $community], 200);
+        } else {
+            return response()->json(['error' => 'No se encontró ninguna comunidad para actualizar'], 404);
+        }
     }
 }
