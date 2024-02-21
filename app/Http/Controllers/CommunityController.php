@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Community;
 use App\Models\Comment;
 use App\Models\JoinCommunity;
@@ -112,18 +113,11 @@ class CommunityController extends Controller
     }
 
     public function getMyCommunities (Request $request) {
-        $token = $request->bearerToken();   //Recuperamos el token 
-
-        if (auth()->guard('sanctum')->check($token)) {
-            // El token es válido
-            return response()->json(['message' => 'Token de autenticación válido']);
-        } else {
-            // El token no es válido
-            return response()->json(['error' => 'Token de autenticación inválido'], 401);
-            // throw new AuthenticationException(
-            //     'Unauthenticated.', ['sanctum'], route('login')
-            // );
-        }
+        Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
+        $user = Auth::user(); // Usuario del token
+        $id = $user['id'];
+        $communities = Community::where('user_id', $id)->get(); //Obtenemos las comunidades
+        return $communities;
     }
 
     public function createCommunity (CreateCommunityRequest $request) {

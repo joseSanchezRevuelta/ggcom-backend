@@ -22,12 +22,18 @@ class AuthenticateWithSanctum
         // }
 
         $token = $request->bearerToken();
-
         if ($token && auth()->guard('sanctum')->check($token)) {
             // El token de autenticación es válido
             return $next($request);
+        } else if (!$token){
+            return response()->json([
+                'error' => [
+                    'status' => 404,
+                    'title' => 'Not Found',
+                    'details' => 'The resource was not found.'
+                ]
+            ], 404);
         } else {
-            // El token de autenticación no es válido
             return response()->json(['error' => 'Token de autenticación inválido'], 401);
         }
 
