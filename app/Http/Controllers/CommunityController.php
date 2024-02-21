@@ -14,41 +14,10 @@ use App\Http\Requests\DeleteCommunityRequest;
 
 class CommunityController extends Controller
 {
-    public function getCommunities (Request $request) {
-        if ($request->input('language')) {  //Language
-            $language = $request->input('language');
-            $communities = Community::where('language', $language)->get();
-            if ($communities) {
-                return $communities;
-            } else {
-                return response()->json([
-                    'error' => [
-                        'status' => 500,
-                        'title' => 'Database Error',
-                        'details' => 'An error occurred while processing your request.'
-                    ]
-                ], 500);
-            }
-        } else {
-            //Popular
-            $communities = Community::orderBy('num_persons', 'desc')->get();
-            if ($communities) {
-                return $communities;
-            } else {
-                return response()->json([
-                    'error' => [
-                        'status' => 500,
-                        'title' => 'Database Error',
-                        'details' => 'An error occurred while processing your request.'
-                    ]
-                ], 500);
-            }
-        }
-    }
-
-    public function getCommunitiesLanguage(Request $request) {
-        $language = $request->input('language');
-        $communities = Community::where('language', $language)->get();
+    // Función para cuando no haya parámetros para getCoomunities (por defecto)
+    private function initCommunities () {
+        // Popular
+        $communities = Community::orderBy('num_persons', 'desc')->get();
         if ($communities) {
             return $communities;
         } else {
@@ -59,6 +28,101 @@ class CommunityController extends Controller
                     'details' => 'An error occurred while processing your request.'
                 ]
             ], 500);
+        }
+    }
+
+    public function getCommunities (Request $request) {
+        try {
+            if ($request->input('l') && $request->input('o')) {
+                $request->validate([
+                    'l' => 'required|string',
+                    'o' => 'required|string',
+                ]);
+                if ($request->input('o') != 'asc' || $request->input('o') != 'desc') {
+                    return $this->initCommunities();
+                }
+                // if ($request->input('l') != '?') {  //Comprobar si es un idioma (pasar un json)
+                //     return $this->initCommunities();
+                // }
+                $language = $request->input('l');
+                $order = $request->input('o');
+                $communities = Community::where('language', $language)->orderBy('num_persons', $order)->get();
+                if ($communities) {
+                    return $communities;
+                } else {
+                    // return response()->json([
+                    //     'error' => [
+                    //         'status' => 500,
+                    //         'title' => 'Database Error',
+                    //         'details' => 'An error occurred while processing your request.'
+                    //     ]
+                    // ], 500);
+                    return $this->initCommunities();
+                }
+            } else if ($request->input('l') && !$request->input('o')) {
+                $request->validate([
+                    'l' => 'required|string'
+                ]);
+                // if ($request->input('l') != '?') {  //Comprobar si es un idioma (pasar un json)
+                //     return $this->initCommunities();
+                // }
+                $language = $request->input('l');
+                $communities = Community::where('language', $language)->orderBy('num_persons', 'desc')->get();
+                if ($communities) {
+                    return $communities;
+                } else {
+                    // return response()->json([
+                    //     'error' => [
+                    //         'status' => 500,
+                    //         'title' => 'Database Error',
+                    //         'details' => 'An error occurred while processing your request.'
+                    //     ]
+                    // ], 500);
+                    return $this->initCommunities();
+                }
+            }  else if (!$request->input('l') && $request->input('o')) {
+                $request->validate([
+                    'o' => 'required|string'
+                ]);
+                if ($request->input('o') != 'asc' || $request->input('o') != 'desc') {
+                    return $this->initCommunities();
+                }
+                $order = $request->input('o');
+                $communities = Community::orderBy('num_persons', $order)->get();
+                if ($communities) {
+                    return $communities;
+                } else {
+                    // return response()->json([
+                    //     'error' => [
+                    //         'status' => 500,
+                    //         'title' => 'Database Error',
+                    //         'details' => 'An error occurred while processing your request.'
+                    //     ]
+                    // ], 500);
+                    return $this->initCommunities();
+                }
+            } else {
+                return $this->initCommunities();
+            }
+        } catch (ValidationException $e) {
+            // $errors = $e->validator->errors()->toArray()->json(['errors' => $errors], 422);
+            // return $errors;
+            return $this->initCommunities();
+        }
+    }
+
+    public function getMyCommunities (Request $request) {
+        $token = $request->bearerToken();   //Recuperamos el token 
+
+        if (auth()->guard('sanctum')->check($token)) {
+            // El token es válido
+            return response()->json(['message' => 'Token de autenticación válido']);
+        } else {
+            // El token no es válido
+            return response()->json(['error' => 'Token de autenticación inválido'], 401);
+            // throw new AuthenticationException(
+            //     'Unauthenticated.', ['sanctum'], route('login')
+            // );
         }
     }
 

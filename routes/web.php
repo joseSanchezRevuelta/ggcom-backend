@@ -14,7 +14,20 @@ use App\Http\Controllers\CommunityController;
 |
 */
 
-Route::get('communities', [CommunityController::class,'getCommunities']);    //Popular
+Route::get('communities', [CommunityController::class,'getCommunities']);   //
 
-Route::get('communities/language', [CommunityController::class, 'getCommunitiesLanguage']);  //Language
+Route::get('mycommunities', [CommunityController::class,'getMyCommunities']);   //Hay que protegerla crear middleware para enviar respuesta personalizada porque si no laravel buscara la ruta login si no estás autentificado
+
+Route::middleware('auth.sanctum')->group(function () {
+    Route::get('mycommunities', [CommunityController::class,'getMyCommunities']);
+
+    // Route::get('/ruta-protegida-2', function (Request $request) {
+    //     return $request->user();
+    // });
+
+    // Puedes agregar más rutas protegidas dentro de este grupo
+});
+
+
+// Route::get('communities/language', [CommunityController::class, 'getCommunitiesLanguage']);  //Language
 
