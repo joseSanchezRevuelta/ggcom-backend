@@ -17,6 +17,8 @@ return new class extends Migration
             // $table->unsignedBigInteger('comments_id');
             $table->string('title', 100);
             $table->string('language', 30);
+            $table->string('game', 100);
+            $table->string('image', 100);
             $table->string('type', 30)->default('public');
             $table->integer('num_persons')->default(1);
             $table->integer('num_comments')->default(1);

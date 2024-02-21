@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterUserRequest;
+use App\Http\Requests\UpdateUserNameRequest;
+use App\Http\Requests\UpdateUserEmailRequest;
+use App\Http\Requests\UpdateUserPasswordRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
 
@@ -48,19 +52,55 @@ class UserController extends Controller
         return $return;
     }
 
-    public function updateUser (UpdateUserRequest $request) {
+    public function profile (Request $request) {
+        Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
+        $user = Auth::user(); // Usuario del token
+        return $user;
+    }
+
+    public function updateUserName (UpdateUserNameRequest $request) {
         $data = $request->input("data.attributes");
         $id = $data['id'];
-        $title = $data['title'];
-        $language = $data['language'];
-        $community = Community::whereId($id)->first();  //Buscamos la comunidad
-        if ($community) {
-            $community->title = $title;
-            $community->language = $language;
-            $community->save();
-            return response()->json(['message' => 'Comunidad actualizada correctamente','communidad' => $community], 200);
+        $username = $data['username'];
+        $user = User::whereId($id)->first();  //Buscamos el user
+        $user->username = $username;
+        if ($user->save()) {
+            return response()->json(['message' => 'Name actualizado correctamente','user' => $user], 200);
         } else {
-            return response()->json(['error' => 'No se encontró ninguna comunidad para actualizar'], 404);
+            return response()->json(['error' => 'Error al actualizar el name del user'], 404);
+        }
+    }
+
+    public function updateUserEmail (UpdateUserEmailRequest $request) {
+        $data = $request->input("data.attributes");
+        $id = $data['id'];
+        $email = $data['email'];
+        $user = User::whereId($id)->first();  //Buscamos el user
+        $user->email = $email;
+        if ($user->save()) {
+            return response()->json(['message' => 'Email actualizado correctamente','user' => $user], 200);
+        } else {
+            return response()->json(['error' => 'Error al actualizar el email del user'], 404);
+        }
+    }
+
+    public function updateUserPassword (UpdateUserPasswordRequest $request) {
+        $data = $request->input("data.attributes");
+        $oldpassword = $data['oldpassword'];
+        $newpassword = $data['newpassword'];
+        Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
+        $user = Auth::user(); // Usuario del token
+
+        // Verifica que la contraseña actual coincida
+        if (!Hash::check($oldpassword, $user->password)) {
+            return response()->json(['error' => 'La contraseña actual no es correcta'], 400);
+        }
+        // Actualiza la contraseña del usuario
+        $user->password = Hash::make($newpassword);
+        if ($user->save()) {
+            return response()->json(['message' => 'Contraseña actualizada correctamente','user' => $user], 200);
+        } else {
+            return response()->json(['error' => 'Error al actualizar la contraseña del user'], 404);
         }
     }
 }

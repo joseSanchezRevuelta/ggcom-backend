@@ -17,10 +17,6 @@ use App\Http\Controllers\CommentController;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
 // Route::middleware('auth:sanctum')->group(function () {
 //     // Rutas protegidas que requieren autenticación
 //     Route::post('createcommunity', [CommunityController::class, 'createCommunity'])->name('createcommunity');
@@ -32,29 +28,36 @@ Route::post('login', [UserController::class,'login'])->name('login');
 
 Route::post('register', [UserController::class,'register'])->name('register');
 
-// Route::patch('updateusername', [UserController::class,'updateUserName'])->name('updateusername');  //
+// Rutas protegidas
+Route::middleware('auth.sanctum')->group(function () {
+    //USERS
+    Route::patch('updateusername', [UserController::class,'updateUserName'])->name('updateusername');
 
-// Route::patch('updateuseravatar', [UserController::class,'updateUserAvatar'])->name('updateuseravatar');  //
+    Route::patch('updateuseremail', [UserController::class,'updateUserEmail'])->name('updateuseremail');
 
-// Route::patch('updateuseremail', [UserController::class,'updateUserEmail'])->name('updateuseremail');  //
+    Route::patch('updateuserpassword', [UserController::class,'updateUserPassword'])->name('updateuserpassword');
 
-// Route::patch('updateuserpassword', [UserController::class,'updateUserPassword'])->name('updateuserpassword');  //
+    // Route::patch('updateuseravatar', [UserController::class,'updateUserAvatar'])->name('updateuseravatar');  //
 
-Route::delete('deleteuser', [UserController::class,'deleteUser'])->name('deleteuser'); //
+    Route::delete('deleteuser', [UserController::class,'deleteUser'])->name('deleteuser'); //
 
-//COMMUNITIES
-Route::post('createcommunity', [CommunityController::class,'createCommunity'])->name('createcommunity');
+    //COMMUNITIES
+    Route::post('createcommunity', [CommunityController::class,'createCommunity'])->name('createcommunity');
 
-Route::post('joincommunity', [CommunityController::class,'joinCommunity'])->name('joincommunity');
+    Route::post('joincommunity', [CommunityController::class,'joinCommunity'])->name('joincommunity');
 
-Route::patch('updatecommunity', [CommunityController::class,'updateCommunity'])->name('updatecommunity');
+    Route::patch('updatecommunity', [CommunityController::class,'updateCommunity'])->name('updatecommunity');
 
-Route::delete('leavecommunity', [CommunityController::class,'leaveCommunity'])->name('leavecommunity');
+    Route::delete('leavecommunity', [CommunityController::class,'leaveCommunity'])->name('leavecommunity');
 
-Route::delete('deletecommunity', [CommunityController::class,'deleteCommunity'])->name('deletecommunity');
+    Route::delete('deletecommunity', [CommunityController::class,'deleteCommunity'])->name('deletecommunity');
 
-//COMMENTS
-Route::post('createcomment', [CommentController::class,'createComment'])->name('createcomment');
+    //COMMENTS
+    Route::post('createcomment', [CommentController::class,'createComment'])->name('createcomment');
 
-Route::delete('deletecomment', [CommentController::class,'deleteComment'])->name('deletecomment');
+    Route::delete('deletecomment', [CommentController::class,'deleteComment'])->name('deletecomment');
+});
 
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });

@@ -17,7 +17,9 @@ class Community extends Model
     protected $fillable = [
         'user_id',
         'title',
-        'language'
+        'language',
+        'game',
+        'image'
     ];
 
     // public function comments() {

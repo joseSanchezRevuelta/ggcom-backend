@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommunityController;
 
 /*
@@ -14,10 +15,14 @@ use App\Http\Controllers\CommunityController;
 |
 */
 
+//COMMUNITIES
 Route::get('communities', [CommunityController::class,'getCommunities']);   //
 
 // Rutas protegidas
 Route::middleware('auth.sanctum')->group(function () {
+    //COMMUNNITIES
     Route::get('mycommunities', [CommunityController::class,'getMyCommunities']);
+    //PROFILE
+    Route::get('profile', [UserController::class,'profile']);
 });
 

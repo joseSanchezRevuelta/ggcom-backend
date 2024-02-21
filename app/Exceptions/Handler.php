@@ -82,12 +82,12 @@ class Handler extends ExceptionHandler
         }
     
         // Otras excepciones de tipo Throwable
-        // return response()->json([
-        //     'error' => [
-        //         'status' => 500,
-        //         'title' => 'Internal Server Error',
-        //         'details' => 'An unexpected error occurred.'
-        //     ]
-        // ], 500);
+        return response()->json([
+            'error' => [
+                'status' => 500,
+                'title' => 'Internal Server Error',
+                'details' => 'An unexpected error occurred.'
+            ]
+        ], 500);
     }
 }
