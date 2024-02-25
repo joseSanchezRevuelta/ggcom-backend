@@ -22,8 +22,8 @@ class LoginUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "data.attributes.email"=>"required|email",
-            "data.attributes.password" => "required|min:8|max:30",
+            "data.attributes.email"=>"required",
+            "data.attributes.password" => "required",
             // "data.attributes.device_name "=> "required"
         ];
     }

@@ -22,21 +22,31 @@ class UserController extends Controller
         $user = User::whereEmail($email)->first();  //Buscamos el user
         if (!$user || !Hash::check($password, $user->password)) {   //Si no existe el user o no es correcta la pass
             return response()->json([
-                "errors" => [
-                    "status" => 422,
-                    "title" => "Resource not found",
-                    "details" => "Incorrect user or password"
-                ]
-            ], 422);
+                "success" => false,
+                'error' => 'Incorrect user or password'
+            ], 200);             
+        } else if ($user || Hash::check($password, $user->password)) {
+            $device_name = $data["device_name"];    //Obtenemos en device_name para crear el token
+            $token = $user->createToken($device_name,['*'])->plainTextToken;    //Creamos el token
+            //Return
+            // $return = (new UserResource($user))
+            // ->additional(["meta" => ["token" => $token, "success" => false]])
+            // ->response()
+            // ->setStatusCode(200);
+            // return $return;
+            return response()->json([
+                "success" => true,
+                "token" => $token,
+                "id" => $user->id,
+                "email" => $user->email,
+                "username" => $user->username
+            ], 200);
+        } else {
+            return response()->json([
+                "success" => false,
+                'error' => 'Incorrect user or password'
+            ], 200);    
         }
-        $device_name = $data["device_name"];    //Obtenemos en device_name para crear el token
-        $token = $user->createToken($device_name,['*'])->plainTextToken;    //Creamos el token
-        //Return
-        $return = (new UserResource($user))
-        ->additional(["meta"=>["token"=>$token]])
-        ->response()
-        ->setStatusCode(201);
-        return $return;
     }
 
     public function register (RegisterUserRequest $request) {
@@ -45,11 +55,18 @@ class UserController extends Controller
         $device_name = ($request->input('data.attributes.device_name'));    //Obtenemos en device_name para crear el token
         $token = $user->createToken($device_name,['*'])->plainTextToken;    //Creamos el token
         //Return
-        $return = (new UserResource($user))
-        ->additional(["meta"=>["token"=>$token]])
-        ->response()
-        ->setStatusCode(201);
-        return $return;
+        return response()->json([
+            "success" => true,
+            "token" => $token,
+            "id" => $user->id,
+            "email" => $user->email,
+            "username" => $user->username
+        ], 200);
+        // $return = (new UserResource($user))
+        // ->additional(["meta"=>["token"=>$token]])
+        // ->response()
+        // ->setStatusCode(201);
+        // return $return;
     }
 
     public function profile (Request $request) {
