@@ -24,7 +24,13 @@ class CreateCommunityRequest extends FormRequest
         return [
             "data.attributes.user_id"=>"required",
             "data.attributes.title"=>"required|max:100",
-            "data.attributes.language"=>"required"
+            "data.attributes.description"=>"max:200",
+            "data.attributes.country"=>"required",
+            "data.attributes.flag"=>"required",
+            "data.attributes.language"=>"required",
+            "data.attributes.timezone"=>"required",
+            "data.attributes.game"=>"required",
+            "data.attributes.image"=>"required"
         ];
     }
 }

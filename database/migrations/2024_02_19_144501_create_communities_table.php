@@ -16,7 +16,11 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             // $table->unsignedBigInteger('comments_id');
             $table->string('title', 100);
-            $table->string('language', 30);
+            $table->string('description', 200)->default("");
+            $table->string('country', 100);
+            $table->string('flag', 1000);
+            $table->string('language', 50);
+            $table->string('timezone', 30);
             $table->string('game', 100);
             $table->string('image', 100);
             $table->string('type', 30)->default('public');
