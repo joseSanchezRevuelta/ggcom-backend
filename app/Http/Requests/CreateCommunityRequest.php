@@ -29,8 +29,9 @@ class CreateCommunityRequest extends FormRequest
             "data.attributes.flag"=>"required",
             "data.attributes.language"=>"required",
             "data.attributes.timezone"=>"required",
-            "data.attributes.game"=>"required",
-            "data.attributes.image"=>"required"
+            "data.attributes.game_id"=>"required",
+            "data.attributes.game_name"=>"required",
+            "data.attributes.game_image"=>"required"
         ];
     }
 }

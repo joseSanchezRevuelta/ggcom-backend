@@ -22,8 +22,9 @@ class Community extends Model
         'flag',
         'language',
         'timezone',
-        'game',
-        'image'
+        'game_id',
+        'game_name',
+        'game_image'
     ];
 
     // public function comments() {

@@ -18,6 +18,8 @@ use App\Http\Controllers\CommunityController;
 //COMMUNITIES
 Route::get('communities', [CommunityController::class,'getCommunities']);   //
 
+Route::get('community', [CommunityController::class,'getCommunity']);   //
+
 // Rutas protegidas
 Route::middleware('auth.sanctum')->group(function () {
     //COMMUNNITIES

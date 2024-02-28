@@ -21,8 +21,9 @@ return new class extends Migration
             $table->string('flag', 1000);
             $table->string('language', 50);
             $table->string('timezone', 30);
-            $table->string('game', 100);
-            $table->string('image', 100);
+            $table->string('game_id', 100);
+            $table->string('game_name', 200);
+            $table->string('game_image', 100);
             $table->string('type', 30)->default('public');
             $table->integer('num_persons')->default(1);
             $table->integer('num_comments')->default(1);
