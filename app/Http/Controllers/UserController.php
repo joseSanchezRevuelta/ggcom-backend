@@ -10,6 +10,7 @@ use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\UpdateUserNameRequest;
 use App\Http\Requests\UpdateUserEmailRequest;
 use App\Http\Requests\UpdateUserPasswordRequest;
+use App\Http\Requests\DeleteUserRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
 
@@ -120,4 +121,21 @@ class UserController extends Controller
             return response()->json(['error' => 'Error al actualizar la contraseña del user'], 404);
         }
     }
+
+    public function deleteUser (DeleteUserRequest $request) {
+        $data = $request->input("data.attributes");
+        $id = $data['id'];
+        $user = User::whereId($id)->first();  //Buscamos el user
+        if ($user) {
+            // Comment::where('user_id', $id)->delete();  //Primero borramos todos los comentarios
+            // JoinCommunity::where('user_id', $id)->delete();  //Segundo borramos los joinCommunities
+            // Community::where('user_id', $id)->delete();  //Segundo borramos llas comunidades
+            $user->delete();   //Despues borramos la comunidad
+            return response()->json(['message' => 'User borrado correctamente','user' => $user], 200);
+        } else {
+            return response()->json(['error' => 'No se encontró ningun user para borrar'], 404);
+        }
+        return $user;
+    }
+
 }
