@@ -76,7 +76,7 @@ class UserController extends Controller
         return $user;
     }
 
-    public function updateUserName (UpdateUserNameRequest $request) {
+    public function updateUsername (UpdateUserNameRequest $request) {
         $data = $request->input("data.attributes");
         $id = $data['id'];
         $username = $data['username'];
@@ -104,15 +104,15 @@ class UserController extends Controller
 
     public function updateUserPassword (UpdateUserPasswordRequest $request) {
         $data = $request->input("data.attributes");
-        $oldpassword = $data['oldpassword'];
+        // $oldpassword = $data['oldpassword'];
         $newpassword = $data['newpassword'];
         Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
         $user = Auth::user(); // Usuario del token
 
         // Verifica que la contraseña actual coincida
-        if (!Hash::check($oldpassword, $user->password)) {
-            return response()->json(['error' => 'La contraseña actual no es correcta'], 400);
-        }
+        // if (!Hash::check($oldpassword, $user->password)) {
+        //     return response()->json(['error' => 'La contraseña actual no es correcta'], 400);
+        // }
         // Actualiza la contraseña del usuario
         $user->password = Hash::make($newpassword);
         if ($user->save()) {

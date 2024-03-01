@@ -23,7 +23,7 @@ class UpdateUserPasswordRequest extends FormRequest
     {
         return [
             // "data.attributes.id"=>"required",
-            "data.attributes.oldpassword" => "required",
+            // "data.attributes.oldpassword" => "required",
             "data.attributes.newpassword" => "required|min:8|max:30|confirmed"
         ];
     }

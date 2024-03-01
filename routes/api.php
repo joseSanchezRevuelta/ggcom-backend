@@ -31,7 +31,7 @@ Route::post('register', [UserController::class,'register'])->name('register');
 // Rutas protegidas
 Route::middleware('auth.sanctum')->group(function () {
     //USERS
-    Route::patch('updateusername', [UserController::class,'updateUserName'])->name('updateusername');
+    Route::patch('updateusername', [UserController::class,'updateUsername'])->name('updateusername');
 
     Route::patch('updateuseremail', [UserController::class,'updateUserEmail'])->name('updateuseremail');
 
