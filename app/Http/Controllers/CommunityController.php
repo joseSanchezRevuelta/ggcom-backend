@@ -128,6 +128,23 @@ class CommunityController extends Controller
         return $communities;
     }
 
+    public function getJoinCommunity (Request $request) {
+        $communityId = $request->input('community_id');
+        Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
+        $user = Auth::user(); // Usuario del tokens
+        $id = $user['id'];
+        $joincommunity = JoinCommunity::where('user_id', $id)->where('community_id', $communityId)->get();
+        return $joincommunity;
+    }
+
+    public function getJoinCommunities (Request $request) {
+        Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
+        $user = Auth::user(); // Usuario del token
+        $id = $user['id'];
+        $joincommunities = JoinCommunity::where('user_id', $id)->get(); //Obtenemos las comunidades
+        return $joincommunities;
+    }
+
     public function createCommunity (CreateCommunityRequest $request) {
         $data = $request->input("data.attributes");
         $community = new Community($data);

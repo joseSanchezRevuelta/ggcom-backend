@@ -22,10 +22,10 @@ class CreateCommentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "data.attributes.user_id"=>"required",
-            "data.attributes.community_id"=>"required",
-            "data.attributes.username"=>"required",
-            "data.attributes.comment' => 'required|string"
+            // "data.attributes.user_id"=>"required",
+            // "data.attributes.community_id"=>"required",
+            // "data.attributes.username"=>"required",
+            // "data.attributes.comment' => 'required|string"
         ];
     }
 }

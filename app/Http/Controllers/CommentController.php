@@ -10,6 +10,15 @@ use App\Http\Requests\DeleteCommentRequest;
 
 class CommentController extends Controller
 {
+    public function getComments (Request $request) {
+        $communityId = $request->query('community_id');
+        $comments = Comment::where('community_id', $communityId)
+                    ->orderBy('created_at', 'desc') // Ordena los comentarios por fecha de creación de forma descendente
+                    ->get();
+
+        return $comments;
+    }
+
     public function createComment (CreateCommentRequest $request) {
         $data = $request->input("data.attributes");
         $comment = new Comment($data);
@@ -18,7 +27,7 @@ class CommentController extends Controller
         $communityId = $data['community_id']; // Obtener el ID de la comunidad
         $community = Community::whereId($communityId)->first();  //Buscamos la comunidad
         $community->increment('num_comments'); // Incrementar el campo 'num_members' en 1
-        return $comment;
+        return $data;
     }
 
     public function deleteComment (DeleteCommentRequest $request) {

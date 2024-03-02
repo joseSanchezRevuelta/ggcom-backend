@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommunityController;
+use App\Http\Controllers\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,10 +21,16 @@ Route::get('communities', [CommunityController::class,'getCommunities']);   //
 
 Route::get('community', [CommunityController::class,'getCommunity']);   //
 
+Route::get('comments', [CommentController::class,'getComments']);   //
+
 // Rutas protegidas
 Route::middleware('auth.sanctum')->group(function () {
     //COMMUNNITIES
     Route::get('mycommunities', [CommunityController::class,'getMyCommunities']);
+    //JOINCOMMUNITY
+    Route::get('getjoincommunities', [CommunityController::class,'getJoinCommunities']);
+
+    Route::get('getjoincommunity', [CommunityController::class,'getJoinCommunity']);
     //PROFILE
     Route::get('profile', [UserController::class,'profile']);
 });
