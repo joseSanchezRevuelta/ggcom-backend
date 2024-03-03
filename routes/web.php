@@ -19,6 +19,8 @@ use App\Http\Controllers\CommentController;
 //COMMUNITIES
 Route::get('communities', [CommunityController::class,'getCommunities']);   //
 
+Route::get('searchcommunities', [CommunityController::class,'getSearchCommunities']);   //
+
 Route::get('community', [CommunityController::class,'getCommunity']);   //
 
 Route::get('comments', [CommentController::class,'getComments']);   //

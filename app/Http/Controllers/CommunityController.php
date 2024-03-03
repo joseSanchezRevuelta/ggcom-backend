@@ -15,101 +15,180 @@ use App\Http\Requests\DeleteCommunityRequest;
 
 class CommunityController extends Controller
 {
-    // Función para cuando no haya parámetros para getCoomunities (por defecto)
-    private function initCommunities () {
-        // Popular
-        $communities = Community::orderBy('num_persons', 'desc')->get();
-        if ($communities) {
-            return $communities;
-        } else {
+
+    // getCommunities
+    public function getCommunities (Request $request) {
+        // Definir la cantidad de elementos por página, puedes ajustarlo según tus necesidades
+        $perPage = $request->input('limit', 12); // Obtenemos el parámetro "limit" de la solicitud, o 12 por defecto
+        $page = $request->input('page'); // Obtener el parámetro "page" de la solicitud, o 1 por defecto
+
+        $communities = Community::orderBy('num_persons', 'desc')->paginate($perPage, ['*'], 'page', $page);
+        // $communities = Community::orderBy('num_persons', 'desc')->get();
+        if ($communities->isEmpty()) {
             return response()->json([
                 'error' => [
-                    'status' => 500,
-                    'title' => 'Database Error',
-                    'details' => 'An error occurred while processing your request.'
+                    'status' => 404,
+                    'title' => 'No communities found',
+                    'details' => 'There are no communities available.'
                 ]
-            ], 500);
+            ], 404);
         }
+
+        // Devolver comunidades paginadas
+        return $communities;
     }
 
-    public function getCommunities (Request $request) {
-        try {
-            if ($request->input('l') && $request->input('o')) {
-                $request->validate([
-                    'l' => 'required|string',
-                    'o' => 'required|string',
-                ]);
-                if ($request->input('o') != 'asc' || $request->input('o') != 'desc') {
-                    return $this->initCommunities();
-                }
-                // if ($request->input('l') != '?') {  //Comprobar si es un idioma (pasar un json)
-                //     return $this->initCommunities();
-                // }
-                $language = $request->input('l');
-                $order = $request->input('o');
-                $communities = Community::where('language', $language)->orderBy('num_persons', $order)->get();
-                if ($communities) {
-                    return $communities;
-                } else {
-                    // return response()->json([
-                    //     'error' => [
-                    //         'status' => 500,
-                    //         'title' => 'Database Error',
-                    //         'details' => 'An error occurred while processing your request.'
-                    //     ]
-                    // ], 500);
-                    return $this->initCommunities();
-                }
-            } else if ($request->input('l') && !$request->input('o')) {
-                $request->validate([
-                    'l' => 'required|string'
-                ]);
-                // if ($request->input('l') != '?') {  //Comprobar si es un idioma (pasar un json)
-                //     return $this->initCommunities();
-                // }
-                $language = $request->input('l');
-                $communities = Community::where('language', $language)->orderBy('num_persons', 'desc')->get();
-                if ($communities) {
-                    return $communities;
-                } else {
-                    // return response()->json([
-                    //     'error' => [
-                    //         'status' => 500,
-                    //         'title' => 'Database Error',
-                    //         'details' => 'An error occurred while processing your request.'
-                    //     ]
-                    // ], 500);
-                    return $this->initCommunities();
-                }
-            }  else if (!$request->input('l') && $request->input('o')) {
-                $request->validate([
-                    'o' => 'required|string'
-                ]);
-                if ($request->input('o') != 'asc' || $request->input('o') != 'desc') {
-                    return $this->initCommunities();
-                }
-                $order = $request->input('o');
-                $communities = Community::orderBy('num_persons', $order)->get();
-                if ($communities) {
-                    return $communities;
-                } else {
-                    // return response()->json([
-                    //     'error' => [
-                    //         'status' => 500,
-                    //         'title' => 'Database Error',
-                    //         'details' => 'An error occurred while processing your request.'
-                    //     ]
-                    // ], 500);
-                    return $this->initCommunities();
-                }
-            } else {
-                return $this->initCommunities();
-            }
-        } catch (ValidationException $e) {
-            // $errors = $e->validator->errors()->toArray()->json(['errors' => $errors], 422);
-            // return $errors;
-            return $this->initCommunities();
+    // Función para cuando no haya parámetros para getCoomunities (por defecto)
+    // private function initCommunities () {
+    //     // Popular
+    //     $communities = Community::orderBy('num_persons', 'desc')->get();
+    //     if ($communities) {
+    //         return $communities;
+    //     } else {
+    //         return response()->json([
+    //             'error' => [
+    //                 'status' => 500,
+    //                 'title' => 'Database Error',
+    //                 'details' => 'An error occurred while processing your request.'
+    //             ]
+    //         ], 500);
+    //     }
+    // }
+
+    // public function getCommunities (Request $request) {
+    //     try {
+    //         if ($request->input('l') && $request->input('o')) {
+    //             $request->validate([
+    //                 'l' => 'required|string',
+    //                 'o' => 'required|string',
+    //             ]);
+    //             if ($request->input('o') != 'asc' || $request->input('o') != 'desc') {
+    //                 return $this->initCommunities();
+    //             }
+    //             // if ($request->input('l') != '?') {  //Comprobar si es un idioma (pasar un json)
+    //             //     return $this->initCommunities();
+    //             // }
+    //             $language = $request->input('l');
+    //             $order = $request->input('o');
+    //             $communities = Community::where('language', $language)->orderBy('num_persons', $order)->get();
+    //             if ($communities) {
+    //                 return $communities;
+    //             } else {
+    //                 // return response()->json([
+    //                 //     'error' => [
+    //                 //         'status' => 500,
+    //                 //         'title' => 'Database Error',
+    //                 //         'details' => 'An error occurred while processing your request.'
+    //                 //     ]
+    //                 // ], 500);
+    //                 return $this->initCommunities();
+    //             }
+    //         } else if ($request->input('l') && !$request->input('o')) {
+    //             $request->validate([
+    //                 'l' => 'required|string'
+    //             ]);
+    //             // if ($request->input('l') != '?') {  //Comprobar si es un idioma (pasar un json)
+    //             //     return $this->initCommunities();
+    //             // }
+    //             $language = $request->input('l');
+    //             $communities = Community::where('language', $language)->orderBy('num_persons', 'desc')->get();
+    //             if ($communities) {
+    //                 return $communities;
+    //             } else {
+    //                 // return response()->json([
+    //                 //     'error' => [
+    //                 //         'status' => 500,
+    //                 //         'title' => 'Database Error',
+    //                 //         'details' => 'An error occurred while processing your request.'
+    //                 //     ]
+    //                 // ], 500);
+    //                 return $this->initCommunities();
+    //             }
+    //         }  else if (!$request->input('l') && $request->input('o')) {
+    //             $request->validate([
+    //                 'o' => 'required|string'
+    //             ]);
+    //             if ($request->input('o') != 'asc' || $request->input('o') != 'desc') {
+    //                 return $this->initCommunities();
+    //             }
+    //             $order = $request->input('o');
+    //             $communities = Community::orderBy('num_persons', $order)->get();
+    //             if ($communities) {
+    //                 return $communities;
+    //             } else {
+    //                 // return response()->json([
+    //                 //     'error' => [
+    //                 //         'status' => 500,
+    //                 //         'title' => 'Database Error',
+    //                 //         'details' => 'An error occurred while processing your request.'
+    //                 //     ]
+    //                 // ], 500);
+    //                 return $this->initCommunities();
+    //             }
+    //         } else {
+    //             return $this->initCommunities();
+    //         }
+    //     } catch (ValidationException $e) {
+    //         // $errors = $e->validator->errors()->toArray()->json(['errors' => $errors], 422);
+    //         // return $errors;
+    //         return $this->initCommunities();
+    //     }
+    // }
+
+    public function getSearchCommunities (Request $request) {
+        $search = $request->input('search');
+        $game_id = $request->input('game_id');
+        $country = $request->input('country');
+        $language = $request->input('language');
+        $timezone = $request->input('timezone');
+        $order = $request->input('order');
+
+        $query = Community::query();
+
+        if ($search !== null && $search !== '') {
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%$search%")
+                  ->orWhere('description', 'like', "%$search%")
+                  ->orWhere('game_name', 'like', "%$search%");
+            });
         }
+
+        if ($game_id !== null && $game_id !== '') {
+            $query->where('game_id', $game_id);
+        }
+
+        if ($country !== null && $country !== 'all') {
+            $query->where('country', $country);
+        }
+
+        if ($language !== null && $language !== 'all') {
+            $query->where('language', $language);
+        }
+
+        if ($timezone !== null && $timezone !== 'all') {
+            $query->where('language', $timezone);
+        }
+
+        switch ($order) {
+            case 'mostpopular':
+                $query->orderBy('num_comments', 'DESC');
+                break;
+            case 'lesspopular':
+                $query->orderBy('num_comments', 'ASC');
+                break;
+            case 'morepeople':
+                $query->orderBy('num_persons', 'DESC');
+                break;
+            case 'lesspeople':
+                $query->orderBy('num_persons', 'ASC');
+                break;
+            default:
+                break;
+        }
+
+        $communities = $query->get();
+
+        return response()->json($communities);
     }
 
     public function getCommunity (Request $request) {
