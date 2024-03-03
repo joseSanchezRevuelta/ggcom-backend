@@ -26,9 +26,9 @@ Route::get('comments', [CommentController::class,'getComments']);   //
 // Rutas protegidas
 Route::middleware('auth.sanctum')->group(function () {
     //COMMUNNITIES
-    Route::get('mycommunities', [CommunityController::class,'getMyCommunities']);
+    Route::get('myjoincommunities', [CommunityController::class,'getMyJoinCommunities']);
     //JOINCOMMUNITY
-    Route::get('getjoincommunities', [CommunityController::class,'getJoinCommunities']);
+    Route::get('mycreatedcommunities', [CommunityController::class,'getCreatedCommunities']);
 
     Route::get('getjoincommunity', [CommunityController::class,'getJoinCommunity']);
     //PROFILE
