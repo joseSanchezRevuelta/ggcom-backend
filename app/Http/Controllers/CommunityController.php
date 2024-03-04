@@ -24,15 +24,15 @@ class CommunityController extends Controller
 
         $communities = Community::orderBy('num_persons', 'desc')->paginate($perPage, ['*'], 'page', $page);
         // $communities = Community::orderBy('num_persons', 'desc')->get();
-        if ($communities->isEmpty()) {
-            return response()->json([
-                'error' => [
-                    'status' => 404,
-                    'title' => 'No communities found',
-                    'details' => 'There are no communities available.'
-                ]
-            ], 404);
-        }
+        // if ($communities->isEmpty()) {
+        //     return response()->json([
+        //         'error' => [
+        //             'status' => 404,
+        //             'title' => 'No communities found',
+        //             'details' => 'There are no communities available.'
+        //         ]
+        //     ], 404);
+        // }
 
         // Devolver comunidades paginadas
         return $communities;
