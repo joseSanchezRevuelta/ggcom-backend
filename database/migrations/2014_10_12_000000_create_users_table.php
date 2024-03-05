@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('password');
             $table->string('avatar')->default('');;
             $table->string('role')->default('user');
+            // $table->string('role_id')->default('gfdfg4554f345tgddfg234esfff45ggf');
+            $table->string('state')->default('active');
             $table->rememberToken();
             $table->timestamps();
         });

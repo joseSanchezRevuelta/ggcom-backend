@@ -25,6 +25,8 @@ Route::get('community', [CommunityController::class,'getCommunity']);   //
 
 Route::get('comments', [CommentController::class,'getComments']);   //
 
+Route::get('checkuser', [UserController::class,'checkUser']);   //
+
 // Rutas protegidas
 Route::middleware('auth.sanctum')->group(function () {
     //COMMUNNITIES
@@ -35,5 +37,8 @@ Route::middleware('auth.sanctum')->group(function () {
     Route::get('getjoincommunity', [CommunityController::class,'getJoinCommunity']);
     //PROFILE
     Route::get('profile', [UserController::class,'profile']);
+
+    //ADMIN
+    Route::get('getusers', [UserController::class,'getUsers']);
 });
 
