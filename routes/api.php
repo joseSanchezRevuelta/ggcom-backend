@@ -52,6 +52,15 @@ Route::middleware('auth.sanctum')->group(function () {
 
     Route::delete('deletecommunity', [CommunityController::class,'deleteCommunity'])->name('deletecommunity');
 
+    Route::patch('updatetitlecommunity', [CommunityController::class,'updateTitleCommunity'])->name('updatetitlecommunity');
+
+    Route::patch('updatedescriptioncommunity', [CommunityController::class,'updateDescriptionCommunity'])->name('updatedescriptioncommunity');
+
+    Route::patch('updatecountrycommunity', [CommunityController::class,'updateCountryCommunity'])->name('updatecountrycommunity');
+
+    Route::patch('updatelanguagecommunity', [CommunityController::class,'updateLanguageCommunity'])->name('updatelanguagecommunity');
+
+
     //COMMENTS
     Route::post('createcomment', [CommentController::class,'createComment'])->name('createcomment');
 

@@ -22,9 +22,17 @@ class UpdateCommunityRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "data.attributes.id"=>"required",
+            "data.attributes.user_id"=>"required",
+            "data.attributes.community_id"=>"required",
             "data.attributes.title"=>"required",
-            "data.attributes.language"=>"required"
+            "data.attributes.description"=>"required",
+            "data.attributes.country"=>"required",
+            "data.attributes.flag"=>"required",
+            "data.attributes.language"=>"required",
+            "data.attributes.timezone"=>"required",
+            "data.attributes.game_id"=>"required",
+            "data.attributes.game_name"=>"required",
+            "data.attributes.game_image"=>"required",
         ];
     }
 }

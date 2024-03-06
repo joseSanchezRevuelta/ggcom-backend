@@ -199,6 +199,20 @@ class CommunityController extends Controller
         return $community;
     }
 
+    public function getEditCommunity (Request $request) {
+        // $data = $request->input("data.attributes");
+        // $communityId = $data['community_id'];
+        $communityId = $request->query('community_id');
+        $community = Community::whereId($communityId)->first();  //Buscamos la comunidad
+        Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
+        $user = Auth::user(); // Usuario del token
+        if ($user->id == $community->user_id) {
+            return $community;
+        } else if ($user->id != $community->user_id && $user->role == 'admin') {
+            return $community;
+        }
+    }
+
     public function getMyJoinCommunities (Request $request) {
         Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
         $user = Auth::user(); // Usuario del token
@@ -213,11 +227,18 @@ class CommunityController extends Controller
     }
 
     public function getCreatedCommunities (Request $request) {
+        $userid = $request->query('user_id');
         Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
         $user = Auth::user(); // Usuario del token
-        $id = $user['id'];
-        $communities = Community::where('user_id', $id)->get(); //Obtenemos las comunidades
-        return $communities;
+        if ($user->id != $userid) {
+            if ($user->role === 'admin') {
+                $communities = Community::where('user_id', $userid)->get(); //Obtenemos las comunidades
+                return $communities;
+            }
+        } else if ($user->id == $userid) {
+            $communities = Community::where('user_id', $userid)->get(); //Obtenemos las comunidades
+            return $communities;
+        }
     }
 
     public function getJoinCommunity (Request $request) {
@@ -275,17 +296,123 @@ class CommunityController extends Controller
 
     public function updateCommunity (UpdateCommunityRequest $request) {
         $data = $request->input("data.attributes");
-        $id = $data['id'];
+        $userid = $data['user_id'];
+        $communityid = $data['community_id'];
         $title = $data['title'];
+        $description = $data['description'];
+        $country = $data['country'];
+        $flag = $data['flag'];
         $language = $data['language'];
-        $community = Community::whereId($id)->first();  //Buscamos la comunidad
+        $timezone = $data['timezone'];
+        $game_id = $data['game_id'];
+        $game_name = $data['game_name'];
+        $game_image = $data['game_image'];
+        $community = Community::whereId($communityid)->first();  //Buscamos la comunidad
         if ($community) {
+            Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
+            $user = Auth::user(); // Usuario del token
+            if ($user->id != $userid) {
+                if ($user->role === 'admin') {
+                    $community->title = $title;
+                    $community->description = $description;
+                    $community->country = $country;
+                    $community->flag = $flag;
+                    $community->language = $language;
+                    $community->timezone = $timezone;
+                    $community->game_id = $game_id;
+                    $community->game_name = $game_name;
+                    $community->game_name = $game_name;
+                    $community->game_image = $game_image;
+                    $community->save();
+                    return response()->json(['message' => 'Comunidad actualizada correctamente','communidad' => $community], 200);
+                }
+            } else if ($user->id == $userid) {
+                $community->title = $title;
+                $community->description = $description;
+                $community->country = $country;
+                $community->flag = $flag;
+                $community->language = $language;
+                $community->timezone = $timezone;
+                $community->game_id = $game_id;
+                $community->game_name = $game_name;
+                $community->game_name = $game_name;
+                $community->game_image = $game_image;
+                $community->save();
+                return response()->json(['message' => 'Comunidad actualizada correctamente','communidad' => $community], 200);
+            }
+        }
+        return response()->json(['error' => 'No se encontró ninguna comunidad para actualizar'], 404);
+    }
+
+    public function updateTitleCommunity (Request $request) {
+        $data = $request->input("data.attributes");
+        $communityId = $data['community_id'];
+        $title = $data['title_new'];
+        $community = Community::whereId($communityId)->first();  //Buscamos la comunidad
+        Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
+        $user = Auth::user(); // Usuario del tokens
+        if ($user->id !== $community->user_id) {
             $community->title = $title;
+            $community->save();
+            return $community;
+        } else if ($user->role === 'admin') {
+            $community->title = $title;
+            $community->save();
+            return $community;
+        }
+    }
+
+    public function updateDescriptionCommunity (Request $request) {
+        $data = $request->input("data.attributes");
+        $communityId = $data['community_id'];
+        $description = $data['description_new'];
+        $community = Community::whereId($communityId)->first();  //Buscamos la comunidad
+        Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
+        $user = Auth::user(); // Usuario del tokens
+        if ($user->id !== $community->user_id) {
+            $community->description = $description;
+            $community->save();
+            return $community;
+        } else if ($user->role === 'admin') {
+            $community->description = $description;
+            $community->save();
+            return $community;
+        }
+    }
+
+    public function updateCountryCommunity (Request $request) {
+        $data = $request->input("data.attributes");
+        $communityId = $data['community_id'];
+        $country = $data['country_new'];
+        $community = Community::whereId($communityId)->first();  //Buscamos la comunidad
+        Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
+        $user = Auth::user(); // Usuario del tokens
+        if ($user->id !== $community->user_id) {
+            $community->country = $country;
+            $community->save();
+            return $community;
+        } else if ($user->role === 'admin') {
+            $community->country = $country;
+            $community->save();
+            return $community;
+        }
+    }
+
+    public function updateLanguageCommunity (Request $request) {
+        $data = $request->input("data.attributes");
+        $communityId = $data['community_id'];
+        $language = $data['language_new'];
+        $community = Community::whereId($communityId)->first();  //Buscamos la comunidad
+        Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
+        $user = Auth::user(); // Usuario del tokens
+        if ($user->id !== $community->user_id) {
             $community->language = $language;
             $community->save();
-            return response()->json(['message' => 'Comunidad actualizada correctamente','communidad' => $community], 200);
-        } else {
-            return response()->json(['error' => 'No se encontró ninguna comunidad para actualizar'], 404);
+            return $community;
+        } else if ($user->role === 'admin') {
+            $community->language = $language;
+            $community->save();
+            return $community;
         }
     }
 

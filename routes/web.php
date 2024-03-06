@@ -30,6 +30,8 @@ Route::get('checkuser', [UserController::class,'checkUser']);   //
 // Rutas protegidas
 Route::middleware('auth.sanctum')->group(function () {
     //COMMUNNITIES
+    Route::get('geteditcommunity', [CommunityController::class,'getEditCommunity']);
+
     Route::get('myjoincommunities', [CommunityController::class,'getMyJoinCommunities']);
     //JOINCOMMUNITY
     Route::get('mycreatedcommunities', [CommunityController::class,'getCreatedCommunities']);
