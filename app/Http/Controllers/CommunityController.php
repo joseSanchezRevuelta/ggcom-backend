@@ -258,12 +258,22 @@ class CommunityController extends Controller
         return $joincommunities;
     }
 
-    public function createCommunity (CreateCommunityRequest $request) {
+    public function createCommunity(CreateCommunityRequest $request) {
         $data = $request->input("data.attributes");
         $community = new Community($data);
         $community->save();
+        if ($community) {
+            $userid = $data['user_id'];
+            $communityid = $community->id;
+            $joinCommunity = new JoinCommunity([
+                'user_id' => $userid,
+                'community_id' => $communityid
+            ]);
+            $joinCommunity->save();
+        }
         return $community;
     }
+    
 
     public function joinCommunity (JoinCommunityRequest $request) {
         $data = $request->input("data.attributes");

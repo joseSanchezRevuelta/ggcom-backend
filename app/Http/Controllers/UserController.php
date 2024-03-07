@@ -190,11 +190,15 @@ class UserController extends Controller
 
     public function getUsers (GetUsersRequest $request) {
         Auth::shouldUse('sanctum');
-        $user = Auth::user(); // Usuario del token
+        $user = Auth::user(); // Usuario del 
+        $perPage = $request->input('limit', 12); // Obtenemos el parámetro "limit" de la solicitud, o 12 por defecto
+        $page = $request->input('page'); // Obtener el parámetro "page" de la solicitud, o 1 por defecto
         $response;
         if ($user->role === 'admin') {
-            $users = User::all();
+            $users = User::paginate($perPage, ['*'], 'page', $page);
+            // $allUsers = User::all();
             $response = $users;
+            return response()->json($response);
         } else if ($user->role === 'user') {
             $response = null;
         }
