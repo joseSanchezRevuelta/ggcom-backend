@@ -102,7 +102,10 @@ class UserController extends Controller
         $user = User::whereId($id)->first();  //Buscamos el user
         $user->username = $username;
         if ($user->save()) {
-            return response()->json(['message' => 'Name actualizado correctamente','user' => $user], 200);
+            return response()->json([
+                "success" => true,
+                "message" => 'Usermaname actualizado con exito'
+            ], 200);
         } else {
             return response()->json(['error' => 'Error al actualizar el name del user'], 404);
         }
@@ -115,7 +118,10 @@ class UserController extends Controller
         $user = User::whereId($id)->first();  //Buscamos el user
         $user->email = $email;
         if ($user->save()) {
-            return response()->json(['message' => 'Email actualizado correctamente','user' => $user], 200);
+            return response()->json([
+                "success" => true,
+                "message" => 'Email actualizado con exito'
+            ], 200);
         } else {
             return response()->json(['error' => 'Error al actualizar el email del user'], 404);
         }
@@ -133,25 +139,44 @@ class UserController extends Controller
                 $userdb = User::whereId($userid)->first();  //Buscamos el user
                 $userdb->password = Hash::make($newpassword);
                 if ($userdb->save()) {
-                    return response()->json(['message' => 'Contraseña actualizada correctamente','user' => $user], 200);
+                    return response()->json([
+                        "success" => true,
+                        "message" => 'Pass actualizado con exito'
+                    ],200);
                 } else {
-                    return response()->json(['error' => 'Error al actualizar la contraseña del user'], 404);
+                    return response()->json([
+                        "success" => false,
+                        'error' => 'Error al actualizar la contraseña del user 1'
+                    ],404);
                 }
             }
         } else if ($user->id === $userid) {
-                            // Verifica que la contraseña actual coincida
-                // if (!Hash::check($oldpassword, $user->password)) {
-                //     return response()->json(['error' => 'La contraseña actual no es correcta'], 400);
-                // }
-                // Actualiza la contraseña del usuario
-                $user->password = Hash::make($newpassword);
-                if ($user->save()) {
-                    return response()->json(['message' => 'Contraseña actualizada correctamente','user' => $user], 200);
-                } else {
-                    return response()->json(['error' => 'Error al actualizar la contraseña del user'], 404);
-                }
+            $userpassword = $data['user_password'];
+            $userdb = User::whereId($userid)->first();  //Buscamos el user
+            if (!Hash::check($userpassword, $userdb->password)) {
+                return response()->json([
+                    'success'=> false,
+                    'error' => 'Error al actualizar la contraseña del user 2'
+                ],404);
+            }
+            // Actualiza la contraseña del usuario
+            $user->password = Hash::make($newpassword);
+            if ($user->save()) {
+                return response()->json([
+                    'success'=> true,
+                    'message' => 'Contraseña actualizada correctamente',
+                ],200);
+            } else {
+                return response()->json([
+                    'success'=> false,
+                    'error' => 'Error al actualizar la contraseña del user 3'
+                ],404);
+            }
         } else {
-            return response()->json(['error' => 'Error al actualizar la contraseña del user'], 404);
+            return response()->json([
+                'success'=> false,
+                'error' => 'Error al actualizar la contraseña del user 4'
+            ],404);
         }
     }
 
