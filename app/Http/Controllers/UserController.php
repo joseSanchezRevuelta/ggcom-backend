@@ -189,25 +189,49 @@ class UserController extends Controller
             if ($user->role === 'admin') {
                 $userdb = User::whereId($userid)->first();  //Buscamos el user
                 if ($userdb) {
-                    Comment::where('user_id', $userid)->delete();  //Primero borramos todos los comentarios
+                    Comment::where('user_id', $userdb)->delete();  //Primero borramos todos los comentarios
                     JoinCommunity::where('user_id', $userid)->delete();  //Segundo borramos los joinCommunities
-                    Community::where('user_id', $userid)->delete();  //Segundo borramos llas comunidades
+                    JoinCommunity::where('user_id', $userid)->delete();  //Segundo borramos los joinCommunities
+                    JoinCommunity::where('user_community_id', $userid)->delete();  //Segundo borramos los joinCommunities
+                    Community::where('user_id', $userid)->delete();  //Segundo borramos las comunidades
                     $userdb->delete();   //Despues borramos la comunidad
-                    return response()->json(['message' => 'User borrado correctamente','user' => $userdb], 200);
+                    return response()->json([
+                        'success'=> true,
+                        'message' => 'User delete correctamente',
+                        'data'=> $userdb
+                    ],200);
                 } else {
-                    return response()->json(['error' => 'No se encontró ningun user para borrar'], 404);
+                    return response()->json([
+                        'success'=> false,
+                        'error' => 'Error al delete user 2'
+                    ],404);
                 }
             }
         } else if ($user->id === $userid) {
             $userdb = User::whereId($userid)->first();  //Buscamos el user
             if ($userdb) {
-                Comment::where('user_id', $userid)->delete();  //Primero borramos todos los comentarios
-                JoinCommunity::where('user_id', $userid)->delete();  //Segundo borramos los joinCommunities
-                Community::where('user_id', $userid)->delete();  //Segundo borramos llas comunidades
-                $userdb->delete();   //Despues borramos la comunidad
-                return response()->json(['message' => 'User borrado correctamente','user' => $userdb], 200);
+                $userpassword = $data['password'];
+                if (Hash::check($userpassword, $userdb->password)) {
+                    Comment::where('user_id', $userid)->delete();  //Primero borramos todos los comentarios
+                    JoinCommunity::where('user_id', $userid)->delete();  //Segundo borramos los joinCommunities
+                    JoinCommunity::where('user_community_id', $userid)->delete();  //Segundo borramos los joinCommunities
+                    Community::where('user_id', $userid)->delete();  //Segundo borramos llas comunidades
+                    $userdb->delete();   //Despues borramos la comunidad
+                    return response()->json([
+                        'success'=> true,
+                        'message' => 'User delete correctamente',
+                    ],200);
+                } else {
+                    return response()->json([
+                        'success'=> false,
+                        'error' => 'Incorrect password'
+                    ],404);
+                }
             } else {
-                return response()->json(['error' => 'No se encontró ningun user para borrar'], 404);
+                return response()->json([
+                    'success'=> false,
+                    'error' => 'Error al delete user 3'
+                ],404);
             }
         }
         // return $user;
@@ -229,6 +253,58 @@ class UserController extends Controller
         }
         // return $access;
         return $response;
+    }
+
+    public function getSearchUsers (Request $request) {
+        $search = $request->input('search');
+        $order = $request->input('order');
+        $role = $request->input('role');
+    
+        $query = User::query();
+    
+        if ($search !== null && $search !== '') {
+            $query->where(function($q) use ($search) {
+                $q->where('username', 'like', "%$search%")
+                  ->orWhere('email', 'like', "%$search%");
+            });
+        }
+
+        if ($role !== null && $role !== '' && $role != 'all') {
+            $query->where('role', $role);
+        }
+    
+        switch ($order) {
+            case 'usernamedesc':
+                $query->orderBy('username', 'DESC');
+                break;
+            case 'usernameasc':
+                $query->orderBy('username', 'ASC');
+                break;
+            case 'emaildesc':
+                $query->orderBy('email', 'DESC');
+                break;
+            case 'emailasc':
+                $query->orderBy('email', 'ASC');
+                break;
+            case 'roledesc':
+                $query->orderBy('role', 'DESC');
+                break;
+            case 'roleasc':
+                $query->orderBy('role', 'ASC');
+                break;
+            case 'datedesc':
+                $query->orderBy('created_at', 'DESC');
+                break;
+            case 'dateasc':
+                $query->orderBy('created_at', 'ASC');
+                break;
+            default:
+                break;
+        }
+    
+        $users = $query->get();
+    
+        return response()->json($users);
     }
 
 }

@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie', 'login', 'register', 'createcommunity', 'communities', 'community', 'deletecommunity','updateusername', 'updateuseremail', 'deleteuser', 'getjoincommunities', 'getjoincommunity', 'createcomment', 'comments','deletecomment', 'myjoincommunities', 'mycreatedcommunities', 'searchcommunities', 'checkuser', 'getusers', 'geteditcommunity', '' ],
+    'paths' => ['api/*', 'sanctum/csrf-cookie', 'login', 'register', 'createcommunity', 'communities', 'community', 'deletecommunity','updateusername', 'updateuseremail', 'deleteuser', 'getjoincommunities', 'getjoincommunity', 'createcomment', 'comments','deletecomment', 'myjoincommunities', 'mycreatedcommunities', 'searchcommunities', 'checkuser', 'getusers', 'geteditcommunity', 'searchusers' ],
 
     'allowed_methods' => ['*'],
 

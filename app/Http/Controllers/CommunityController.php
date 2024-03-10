@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Community;
 use App\Models\Comment;
 use App\Models\JoinCommunity;
+use App\Models\User;
 use App\Http\Requests\CreateCommunityRequest;
 use App\Http\Requests\JoinCommunityRequest;
 use App\Http\Requests\UpdateCommunityRequest;
@@ -145,13 +146,21 @@ class CommunityController extends Controller
 
         $query = Community::query();
 
+        // $userdb = User::where('username', $search)->first();
+
         if ($search !== null && $search !== '') {
             $query->where(function($q) use ($search) {
+            // $query->where(function($q) use ($search, $userdb) {
                 $q->where('title', 'like', "%$search%")
                   ->orWhere('description', 'like', "%$search%")
                   ->orWhere('game_name', 'like', "%$search%");
+                  
+                // if ($userdb) {
+                //     $q->orWhere('user_id', 'like', "%$userdb->id%");
+                // }
             });
         }
+        
 
         if ($game_id !== null && $game_id !== '') {
             $query->where('game_id', $game_id);

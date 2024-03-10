@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('communities', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('username');
+            $table->string('username', 100);
             // $table->unsignedBigInteger('comments_id');
             $table->string('title', 100);
             $table->string('description', 200)->default("");

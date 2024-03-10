@@ -21,6 +21,8 @@ Route::get('communities', [CommunityController::class,'getCommunities']);   //
 
 Route::get('searchcommunities', [CommunityController::class,'getSearchCommunities']);   //
 
+Route::get('searchusers', [UserController::class,'getSearchUsers']);   //
+
 Route::get('community', [CommunityController::class,'getCommunity']);   //
 
 Route::get('comments', [CommentController::class,'getComments']);   //
@@ -42,5 +44,7 @@ Route::middleware('auth.sanctum')->group(function () {
 
     //ADMIN
     Route::get('getusers', [UserController::class,'getUsers']);
+
+
 });
 
