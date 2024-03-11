@@ -24,16 +24,6 @@ class CommunityController extends Controller
         $page = $request->input('page'); // Obtener el parámetro "page" de la solicitud, o 1 por defecto
 
         $communities = Community::orderBy('num_persons', 'desc')->paginate($perPage, ['*'], 'page', $page);
-        // $communities = Community::orderBy('num_persons', 'desc')->get();
-        // if ($communities->isEmpty()) {
-        //     return response()->json([
-        //         'error' => [
-        //             'status' => 404,
-        //             'title' => 'No communities found',
-        //             'details' => 'There are no communities available.'
-        //         ]
-        //     ], 404);
-        // }
 
         // Devolver comunidades paginadas
         return $communities;
@@ -141,8 +131,20 @@ class CommunityController extends Controller
         $game_id = $request->input('game_id');
         $country = $request->input('country');
         $language = $request->input('language');
-        $timezone = $request->input('timezone');
         $order = $request->input('order');
+        $signtimezone = $request->input('signtimezone');
+
+        if ($signtimezone == 'mas') {
+            $timezone = str_replace(' ', '+', $request->input('timezone'));
+        } else if ($signtimezone == 'menos') {
+            $timezone = str_replace(' ', '+', $request->input('timezone'));
+        } else {
+            $timezone = $request->input('timezone');
+        }
+
+
+        // $perPage = $request->input('limit', 12); // Obtenemos el parámetro "limit" de la solicitud, o 12 por defecto
+        // $page = $request->input('page'); // Obtener el parámetro "page" de la solicitud, o 1 por defecto
 
         $query = Community::query();
 
@@ -175,7 +177,7 @@ class CommunityController extends Controller
         }
 
         if ($timezone !== null && $timezone !== 'all') {
-            $query->where('language', $timezone);
+            $query->where('timezone', $timezone);
         }
 
         switch ($order) {
@@ -195,6 +197,7 @@ class CommunityController extends Controller
                 break;
         }
 
+        // $communities = $query->paginate($perPage, ['*'], 'page', $page);
         $communities = $query->get();
 
         return response()->json($communities);

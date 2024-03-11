@@ -25,7 +25,7 @@ class UpdateCommunityRequest extends FormRequest
             "data.attributes.user_id"=>"required",
             "data.attributes.community_id"=>"required",
             "data.attributes.title"=>"required",
-            "data.attributes.description"=>"required",
+            // "data.attributes.description"=>"required",
             "data.attributes.country"=>"required",
             "data.attributes.flag"=>"required",
             "data.attributes.language"=>"required",
