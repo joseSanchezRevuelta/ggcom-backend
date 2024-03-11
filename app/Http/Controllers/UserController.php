@@ -13,6 +13,7 @@ use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\UpdateUserNameRequest;
 use App\Http\Requests\UpdateUserEmailRequest;
 use App\Http\Requests\UpdateUserPasswordRequest;
+use App\Http\Requests\UpdateUserRoleRequest;
 use App\Http\Requests\DeleteUserRequest;
 use App\Http\Resources\UserResource;
 use App\Http\Requests\GetUsersRequest;
@@ -178,6 +179,36 @@ class UserController extends Controller
                 'error' => 'Error al actualizar la contraseña del user 4'
             ],404);
         }
+    }
+
+    public function updateUserRole (UpdateUserRoleRequest $request) {
+        $data = $request->input("data.attributes");
+        // $oldpassword = $data['oldpassword'];
+        $userid = $data['id'];
+        $role = $data['role'];
+        Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
+        $user = Auth::user(); // Usuario del token
+        if ($user->role === 'admin') {
+            $userdb = User::whereId($userid)->first();  //Buscamos el user
+            $userdb->role = $role;
+            if ($userdb->save()) {
+                return response()->json([
+                    "success" => true,
+                    "message" => 'Role actualizado con exito'
+                ],200);
+            } else {
+                return response()->json([
+                    "success" => false,
+                    'error' => 'Error al actualizar el role'
+                ],404);
+            }
+        } else {
+            return response()->json([
+                'success'=> false,
+                'error' => 'Error al actualizar el role'
+            ],404);
+        }
+        return $role;
     }
 
     public function deleteUser (DeleteUserRequest $request) {

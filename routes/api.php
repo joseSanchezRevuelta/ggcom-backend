@@ -37,6 +37,8 @@ Route::middleware('auth.sanctum')->group(function () {
 
     Route::patch('updateuserpassword', [UserController::class,'updateUserPassword'])->name('updateuserpassword');
 
+    Route::patch('updateuserrole', [UserController::class,'updateUserRole'])->name('updateuserrole');
+
     // Route::patch('updateuseravatar', [UserController::class,'updateUserAvatar'])->name('updateuseravatar');  //
 
     Route::delete('deleteuser', [UserController::class,'deleteUser'])->name('deleteuser'); //
