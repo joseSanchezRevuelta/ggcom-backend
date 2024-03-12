@@ -221,7 +221,7 @@ class UserController extends Controller
                 $userdb = User::whereId($userid)->first();  //Buscamos el user
                 if ($userdb) {
                     Comment::where('user_id', $userdb)->delete();  //Primero borramos todos los comentarios
-                    JoinCommunity::where('user_id', $userid)->delete();  //Segundo borramos los joinCommunities
+                    // JoinCommunity::where('user_id', $userid)->delete();  //Segundo borramos los joinCommunities
                     JoinCommunity::where('user_id', $userid)->delete();  //Segundo borramos los joinCommunities
                     JoinCommunity::where('user_community_id', $userid)->delete();  //Segundo borramos los joinCommunities
                     Community::where('user_id', $userid)->delete();  //Segundo borramos las comunidades

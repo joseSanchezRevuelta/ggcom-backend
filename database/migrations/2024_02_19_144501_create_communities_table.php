@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('communities', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('username', 100);
+            // $table->string('username', 100);
             // $table->unsignedBigInteger('comments_id');
             $table->string('title', 100);
             $table->string('description', 200)->default("");
@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('game_image', 100);
             $table->string('type', 30)->default('public');
             $table->integer('num_persons')->default(1);
-            $table->integer('num_comments')->default(1);
+            $table->integer('num_comments')->default(0);
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');;

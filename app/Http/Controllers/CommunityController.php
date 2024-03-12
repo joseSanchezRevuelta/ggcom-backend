@@ -235,6 +235,7 @@ class CommunityController extends Controller
             $arrayIds[] = $item['community_id'];
         });
         $communities = Community::whereIn('id', $arrayIds)->get();
+        // $communities = Community::whereIn('id', $arrayIds)->whereNotIn('user_community_id', $id)->get();
         return $communities;
     }
 
@@ -279,7 +280,8 @@ class CommunityController extends Controller
             $communityid = $community->id;
             $joinCommunity = new JoinCommunity([
                 'user_id' => $userid,
-                'community_id' => $communityid
+                'community_id' => $communityid,
+                'user_community_id' => $userid
             ]);
             $joinCommunity->save();
         }
@@ -291,11 +293,11 @@ class CommunityController extends Controller
         $data = $request->input("data.attributes");
         $joinCommunity = new JoinCommunity($data);
         $joinCommunity->save();
-        // Incrementar num_persons de la tabla communities
+        // // Incrementar num_persons de la tabla communities
         $communityId = $data['community_id']; // Obtener el ID de la comunidad
         $community = Community::whereId($communityId)->first();  //Buscamos la comunidad
         $community->increment('num_persons'); // Incrementar el campo 'num_members' en 1
-        return $community;
+        return $joinCommunity;
     }
 
     public function leaveCommunity (LeaveCommunityRequest $request) {

@@ -16,6 +16,7 @@ class JoinCommunity extends Model
      */
     protected $fillable = [
         'user_id',
-        'community_id'
+        'community_id',
+        'user_community_id'
     ];
 }
