@@ -46,13 +46,7 @@ Route::middleware('auth.sanctum')->group(function () {
     //COMMUNITIES
     Route::post('createcommunity', [CommunityController::class,'createCommunity'])->name('createcommunity');
 
-    Route::post('joincommunity', [CommunityController::class,'joinCommunity'])->name('joincommunity');
-
     Route::patch('updatecommunity', [CommunityController::class,'updateCommunity'])->name('updatecommunity');
-
-    Route::delete('leavecommunity', [CommunityController::class,'leaveCommunity'])->name('leavecommunity');
-
-    Route::delete('deletecommunity', [CommunityController::class,'deleteCommunity'])->name('deletecommunity');
 
     Route::patch('updatetitlecommunity', [CommunityController::class,'updateTitleCommunity'])->name('updatetitlecommunity');
 
@@ -62,13 +56,15 @@ Route::middleware('auth.sanctum')->group(function () {
 
     Route::patch('updatelanguagecommunity', [CommunityController::class,'updateLanguageCommunity'])->name('updatelanguagecommunity');
 
+    Route::delete('deletecommunity', [CommunityController::class,'deleteCommunity'])->name('deletecommunity');
+
+    //JOINCOMMUNITY
+    Route::post('joincommunity', [CommunityController::class,'joinCommunity'])->name('joincommunity');
+
+    Route::delete('leavecommunity', [CommunityController::class,'leaveCommunity'])->name('leavecommunity');
 
     //COMMENTS
     Route::post('createcomment', [CommentController::class,'createComment'])->name('createcomment');
 
     Route::delete('deletecomment', [CommentController::class,'deleteComment'])->name('deletecomment');
 });
-
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });

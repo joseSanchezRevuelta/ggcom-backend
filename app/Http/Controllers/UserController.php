@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    //Check user
     public function checkUser (Request $request) {
         Auth::shouldUse('sanctum');
         $user = Auth::user(); // Usuario del token
@@ -30,10 +31,10 @@ class UserController extends Controller
         } else if ($user->role === 'admin') {
             $access = true;
         }
-        // return $access;
         return response()->json($access);
     }
 
+    //Login
     public function login (LoginUserRequest $request) {
         $data = $request->input("data.attributes");
         $email = $data['email'];
@@ -47,12 +48,6 @@ class UserController extends Controller
         } else if ($user || Hash::check($password, $user->password)) {
             $device_name = $data["device_name"];    //Obtenemos en device_name para crear el token
             $token = $user->createToken($device_name,['*'])->plainTextToken;    //Creamos el token
-            //Return
-            // $return = (new UserResource($user))
-            // ->additional(["meta" => ["token" => $token, "success" => false]])
-            // ->response()
-            // ->setStatusCode(200);
-            // return $return;
             return response()->json([
                 "success" => true,
                 "token" => $token,
@@ -69,6 +64,7 @@ class UserController extends Controller
         }
     }
 
+    //Register
     public function register (RegisterUserRequest $request) {
         $user = new User ($request->input('data.attributes'));  //Creamos un nuevo user
         $user->save();  //Le guardamos en la BD
@@ -83,24 +79,21 @@ class UserController extends Controller
             "username" => $user->username,
             "role" => $user->role
         ], 200);
-        // $return = (new UserResource($user))
-        // ->additional(["meta"=>["token"=>$token]])
-        // ->response()
-        // ->setStatusCode(201);
-        // return $return;
     }
 
+    //Profile
     public function profile (Request $request) {
         Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
         $user = Auth::user(); // Usuario del token
         return $user;
     }
 
+    //Update Username
     public function updateUsername (UpdateUserNameRequest $request) {
         $data = $request->input("data.attributes");
         $id = $data['id'];
         $username = $data['username'];
-        $user = User::whereId($id)->first();  //Buscamos el user
+        $user = User::whereId($id)->first();
         $user->username = $username;
         if ($user->save()) {
             return response()->json([
@@ -112,11 +105,12 @@ class UserController extends Controller
         }
     }
 
+    //Update Email
     public function updateUserEmail (UpdateUserEmailRequest $request) {
         $data = $request->input("data.attributes");
         $id = $data['id'];
         $email = $data['email'];
-        $user = User::whereId($id)->first();  //Buscamos el user
+        $user = User::whereId($id)->first();
         $user->email = $email;
         if ($user->save()) {
             return response()->json([
@@ -128,16 +122,16 @@ class UserController extends Controller
         }
     }
 
+    //Update Password
     public function updateUserPassword (UpdateUserPasswordRequest $request) {
         $data = $request->input("data.attributes");
-        // $oldpassword = $data['oldpassword'];
         $userid = $data['id'];
         $newpassword = $data['newpassword'];
-        Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
-        $user = Auth::user(); // Usuario del token
+        Auth::shouldUse('sanctum');
+        $user = Auth::user();
         if ($user->id !== $userid) {
             if ($user->role === 'admin') {
-                $userdb = User::whereId($userid)->first();  //Buscamos el user
+                $userdb = User::whereId($userid)->first();
                 $userdb->password = Hash::make($newpassword);
                 if ($userdb->save()) {
                     return response()->json([
@@ -181,15 +175,15 @@ class UserController extends Controller
         }
     }
 
+    //Update Role
     public function updateUserRole (UpdateUserRoleRequest $request) {
         $data = $request->input("data.attributes");
-        // $oldpassword = $data['oldpassword'];
         $userid = $data['id'];
         $role = $data['role'];
-        Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
-        $user = Auth::user(); // Usuario del token
+        Auth::shouldUse('sanctum');
+        $user = Auth::user();
         if ($user->role === 'admin') {
-            $userdb = User::whereId($userid)->first();  //Buscamos el user
+            $userdb = User::whereId($userid)->first();
             $userdb->role = $role;
             if ($userdb->save()) {
                 return response()->json([
@@ -211,20 +205,20 @@ class UserController extends Controller
         return $role;
     }
 
+    //Delete User
     public function deleteUser (DeleteUserRequest $request) {
         $data = $request->input("data.attributes");
         $userid = $data['id'];
         Auth::shouldUse('sanctum');
-        $user = Auth::user(); // Usuario del token
+        $user = Auth::user();
         if ($user->id !== $userid) {
             if ($user->role === 'admin') {
-                $userdb = User::whereId($userid)->first();  //Buscamos el user
+                $userdb = User::whereId($userid)->first();
                 if ($userdb) {
-                    Comment::where('user_id', $userdb)->delete();  //Primero borramos todos los comentarios
-                    // JoinCommunity::where('user_id', $userid)->delete();  //Segundo borramos los joinCommunities
+                    Comment::where('user_id', $userid)->delete();  //Primero borramos los comentarios
                     JoinCommunity::where('user_id', $userid)->delete();  //Segundo borramos los joinCommunities
-                    JoinCommunity::where('user_community_id', $userid)->delete();  //Segundo borramos los joinCommunities
-                    Community::where('user_id', $userid)->delete();  //Segundo borramos las comunidades
+                    JoinCommunity::where('user_community_id', $userid)->delete();  //Tercero borramos los joinCommunities de otros users
+                    Community::where('user_id', $userid)->delete();  //Cuarto borramos las comunidades
                     $userdb->delete();   //Despues borramos la comunidad
                     return response()->json([
                         'success'=> true,
@@ -234,23 +228,24 @@ class UserController extends Controller
                 } else {
                     return response()->json([
                         'success'=> false,
-                        'error' => 'Error al delete user 2'
+                        'error' => 'Error al delete user'
                     ],404);
                 }
             }
         } else if ($user->id === $userid) {
-            $userdb = User::whereId($userid)->first();  //Buscamos el user
+            $userdb = User::whereId($userid)->first();
             if ($userdb) {
                 $userpassword = $data['password'];
                 if (Hash::check($userpassword, $userdb->password)) {
-                    Comment::where('user_id', $userid)->delete();  //Primero borramos todos los comentarios
+                    Comment::where('user_id', $userid)->delete();  //Primero borramos los comentarios
                     JoinCommunity::where('user_id', $userid)->delete();  //Segundo borramos los joinCommunities
-                    JoinCommunity::where('user_community_id', $userid)->delete();  //Segundo borramos los joinCommunities
-                    Community::where('user_id', $userid)->delete();  //Segundo borramos llas comunidades
+                    JoinCommunity::where('user_community_id', $userid)->delete();  //Tercero borramos los joinCommunities de otros users
+                    Community::where('user_id', $userid)->delete();  //Cuarto borramos las comunidades
                     $userdb->delete();   //Despues borramos la comunidad
                     return response()->json([
                         'success'=> true,
                         'message' => 'User delete correctamente',
+                        'data'=> $userdb
                     ],200);
                 } else {
                     return response()->json([
@@ -261,18 +256,19 @@ class UserController extends Controller
             } else {
                 return response()->json([
                     'success'=> false,
-                    'error' => 'Error al delete user 3'
+                    'error' => 'Error al delete user'
                 ],404);
             }
         }
-        // return $user;
     }
 
+    //Get Users
     public function getUsers (GetUsersRequest $request) {
         Auth::shouldUse('sanctum');
-        $user = Auth::user(); // Usuario del 
+        $user = Auth::user();
+        //Consulta por paginas
         $perPage = $request->input('limit', 12); // Obtenemos el parámetro "limit" de la solicitud, o 12 por defecto
-        $page = $request->input('page'); // Obtener el parámetro "page" de la solicitud, o 1 por defecto
+        $page = $request->input('page'); // Obtener el parámetro "page"
         $response;
         if ($user->role === 'admin') {
             $users = User::paginate($perPage, ['*'], 'page', $page);
@@ -282,10 +278,10 @@ class UserController extends Controller
         } else if ($user->role === 'user') {
             $response = null;
         }
-        // return $access;
         return $response;
     }
 
+    //Get Users Search
     public function getSearchUsers (Request $request) {
         $search = $request->input('search');
         $order = $request->input('order');
@@ -334,8 +330,7 @@ class UserController extends Controller
         }
     
         $users = $query->get();
-    
+        
         return response()->json($users);
     }
-
 }

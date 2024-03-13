@@ -16,116 +16,16 @@ use App\Http\Requests\DeleteCommunityRequest;
 
 class CommunityController extends Controller
 {
-
-    // getCommunities
+    //Get Communities
     public function getCommunities (Request $request) {
-        // Definir la cantidad de elementos por página, puedes ajustarlo según tus necesidades
-        $perPage = $request->input('limit', 12); // Obtenemos el parámetro "limit" de la solicitud, o 12 por defecto
-        $page = $request->input('page'); // Obtener el parámetro "page" de la solicitud, o 1 por defecto
-
+        //Consulta por páginas
+        $perPage = $request->input('limit', 12);
+        $page = $request->input('page');
         $communities = Community::orderBy('num_persons', 'desc')->paginate($perPage, ['*'], 'page', $page);
-
-        // Devolver comunidades paginadas
         return $communities;
     }
 
-    // Función para cuando no haya parámetros para getCoomunities (por defecto)
-    // private function initCommunities () {
-    //     // Popular
-    //     $communities = Community::orderBy('num_persons', 'desc')->get();
-    //     if ($communities) {
-    //         return $communities;
-    //     } else {
-    //         return response()->json([
-    //             'error' => [
-    //                 'status' => 500,
-    //                 'title' => 'Database Error',
-    //                 'details' => 'An error occurred while processing your request.'
-    //             ]
-    //         ], 500);
-    //     }
-    // }
-
-    // public function getCommunities (Request $request) {
-    //     try {
-    //         if ($request->input('l') && $request->input('o')) {
-    //             $request->validate([
-    //                 'l' => 'required|string',
-    //                 'o' => 'required|string',
-    //             ]);
-    //             if ($request->input('o') != 'asc' || $request->input('o') != 'desc') {
-    //                 return $this->initCommunities();
-    //             }
-    //             // if ($request->input('l') != '?') {  //Comprobar si es un idioma (pasar un json)
-    //             //     return $this->initCommunities();
-    //             // }
-    //             $language = $request->input('l');
-    //             $order = $request->input('o');
-    //             $communities = Community::where('language', $language)->orderBy('num_persons', $order)->get();
-    //             if ($communities) {
-    //                 return $communities;
-    //             } else {
-    //                 // return response()->json([
-    //                 //     'error' => [
-    //                 //         'status' => 500,
-    //                 //         'title' => 'Database Error',
-    //                 //         'details' => 'An error occurred while processing your request.'
-    //                 //     ]
-    //                 // ], 500);
-    //                 return $this->initCommunities();
-    //             }
-    //         } else if ($request->input('l') && !$request->input('o')) {
-    //             $request->validate([
-    //                 'l' => 'required|string'
-    //             ]);
-    //             // if ($request->input('l') != '?') {  //Comprobar si es un idioma (pasar un json)
-    //             //     return $this->initCommunities();
-    //             // }
-    //             $language = $request->input('l');
-    //             $communities = Community::where('language', $language)->orderBy('num_persons', 'desc')->get();
-    //             if ($communities) {
-    //                 return $communities;
-    //             } else {
-    //                 // return response()->json([
-    //                 //     'error' => [
-    //                 //         'status' => 500,
-    //                 //         'title' => 'Database Error',
-    //                 //         'details' => 'An error occurred while processing your request.'
-    //                 //     ]
-    //                 // ], 500);
-    //                 return $this->initCommunities();
-    //             }
-    //         }  else if (!$request->input('l') && $request->input('o')) {
-    //             $request->validate([
-    //                 'o' => 'required|string'
-    //             ]);
-    //             if ($request->input('o') != 'asc' || $request->input('o') != 'desc') {
-    //                 return $this->initCommunities();
-    //             }
-    //             $order = $request->input('o');
-    //             $communities = Community::orderBy('num_persons', $order)->get();
-    //             if ($communities) {
-    //                 return $communities;
-    //             } else {
-    //                 // return response()->json([
-    //                 //     'error' => [
-    //                 //         'status' => 500,
-    //                 //         'title' => 'Database Error',
-    //                 //         'details' => 'An error occurred while processing your request.'
-    //                 //     ]
-    //                 // ], 500);
-    //                 return $this->initCommunities();
-    //             }
-    //         } else {
-    //             return $this->initCommunities();
-    //         }
-    //     } catch (ValidationException $e) {
-    //         // $errors = $e->validator->errors()->toArray()->json(['errors' => $errors], 422);
-    //         // return $errors;
-    //         return $this->initCommunities();
-    //     }
-    // }
-
+    //Get Communities Search
     public function getSearchCommunities (Request $request) {
         $search = $request->input('search');
         $game_id = $request->input('game_id');
@@ -133,7 +33,7 @@ class CommunityController extends Controller
         $language = $request->input('language');
         $order = $request->input('order');
         $signtimezone = $request->input('signtimezone');
-
+        //Condicion para  saber si  el timezone es '+' o '-', ya que Laravel o mysql no lo coge
         if ($signtimezone == 'mas') {
             $timezone = str_replace(' ', '+', $request->input('timezone'));
         } else if ($signtimezone == 'menos') {
@@ -142,27 +42,15 @@ class CommunityController extends Controller
             $timezone = $request->input('timezone');
         }
 
-
-        // $perPage = $request->input('limit', 12); // Obtenemos el parámetro "limit" de la solicitud, o 12 por defecto
-        // $page = $request->input('page'); // Obtener el parámetro "page" de la solicitud, o 1 por defecto
-
         $query = Community::query();
-
-        // $userdb = User::where('username', $search)->first();
 
         if ($search !== null && $search !== '') {
             $query->where(function($q) use ($search) {
-            // $query->where(function($q) use ($search, $userdb) {
                 $q->where('title', 'like', "%$search%")
                   ->orWhere('description', 'like', "%$search%")
                   ->orWhere('game_name', 'like', "%$search%");
-                  
-                // if ($userdb) {
-                //     $q->orWhere('user_id', 'like', "%$userdb->id%");
-                // }
             });
         }
-        
 
         if ($game_id !== null && $game_id !== '') {
             $query->where('game_id', $game_id);
@@ -197,27 +85,24 @@ class CommunityController extends Controller
                 break;
         }
 
-        // $communities = $query->paginate($perPage, ['*'], 'page', $page);
         $communities = $query->get();
 
         return response()->json($communities);
     }
 
+    //Get Community
     public function getCommunity (Request $request) {
-        // $data = $request->input("data.attributes");
-        // $communityId = $data['community_id'];
         $communityId = $request->query('community_id');
-        $community = Community::whereId($communityId)->first();  //Buscamos la comunidad
+        $community = Community::whereId($communityId)->first();
         return $community;
     }
 
+    //Get Edit Community
     public function getEditCommunity (Request $request) {
-        // $data = $request->input("data.attributes");
-        // $communityId = $data['community_id'];
         $communityId = $request->query('community_id');
-        $community = Community::whereId($communityId)->first();  //Buscamos la comunidad
-        Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
-        $user = Auth::user(); // Usuario del token
+        $community = Community::whereId($communityId)->first();
+        Auth::shouldUse('sanctum');
+        $user = Auth::user();
         if ($user->id == $community->user_id) {
             return $community;
         } else if ($user->id != $community->user_id && $user->role == 'admin') {
@@ -225,35 +110,37 @@ class CommunityController extends Controller
         }
     }
 
+    //Get Created Communities
+    public function getCreatedCommunities (Request $request) {
+        $userid = $request->query('user_id');
+        Auth::shouldUse('sanctum');
+        $user = Auth::user();
+        if ($user->id != $userid) {
+            if ($user->role === 'admin') {
+                $communities = Community::where('user_id', $userid)->get();
+                return $communities;
+            }
+        } else if ($user->id == $userid) {
+            $communities = Community::where('user_id', $userid)->get();
+            return $communities;
+        }
+    }
+
+    //Get Join Communities
     public function getMyJoinCommunities (Request $request) {
-        Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
-        $user = Auth::user(); // Usuario del token
+        Auth::shouldUse('sanctum');
+        $user = Auth::user();
         $id = $user['id'];
-        $joincommunities = JoinCommunity::where('user_id', $id)->get(); //Obtenemos las comunidades
+        $joincommunities = JoinCommunity::where('user_id', $id)->whereNotIn('user_community_id', [$id])->get();
         $arrayIds = [];
         $joincommunities->map(function($item) use (&$arrayIds) {
             $arrayIds[] = $item['community_id'];
         });
         $communities = Community::whereIn('id', $arrayIds)->get();
-        // $communities = Community::whereIn('id', $arrayIds)->whereNotIn('user_community_id', $id)->get();
         return $communities;
     }
 
-    public function getCreatedCommunities (Request $request) {
-        $userid = $request->query('user_id');
-        Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
-        $user = Auth::user(); // Usuario del token
-        if ($user->id != $userid) {
-            if ($user->role === 'admin') {
-                $communities = Community::where('user_id', $userid)->get(); //Obtenemos las comunidades
-                return $communities;
-            }
-        } else if ($user->id == $userid) {
-            $communities = Community::where('user_id', $userid)->get(); //Obtenemos las comunidades
-            return $communities;
-        }
-    }
-
+    //Get Join Community
     public function getJoinCommunity (Request $request) {
         $communityId = $request->input('community_id');
         Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
@@ -263,14 +150,16 @@ class CommunityController extends Controller
         return $joincommunity;
     }
 
+    //Get Join Communities
     public function getJoinCommunities (Request $request) {
-        Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
-        $user = Auth::user(); // Usuario del token
+        Auth::shouldUse('sanctum');
+        $user = Auth::user();
         $id = $user['id'];
-        $joincommunities = JoinCommunity::where('user_id', $id)->get(); //Obtenemos las comunidades
+        $joincommunities = JoinCommunity::where('user_id', $id)->get();
         return $joincommunities;
     }
 
+    //Create Community
     public function createCommunity(CreateCommunityRequest $request) {
         $data = $request->input("data.attributes");
         $community = new Community($data);
@@ -288,18 +177,19 @@ class CommunityController extends Controller
         return $community;
     }
     
-
+    //Join Community
     public function joinCommunity (JoinCommunityRequest $request) {
         $data = $request->input("data.attributes");
         $joinCommunity = new JoinCommunity($data);
         $joinCommunity->save();
-        // // Incrementar num_persons de la tabla communities
-        $communityId = $data['community_id']; // Obtener el ID de la comunidad
-        $community = Community::whereId($communityId)->first();  //Buscamos la comunidad
-        $community->increment('num_persons'); // Incrementar el campo 'num_members' en 1
+        //Incrementar num_persons de la tabla communities
+        $communityId = $data['community_id'];
+        $community = Community::whereId($communityId)->first();
+        $community->increment('num_persons');
         return $joinCommunity;
     }
 
+    //Leave Community
     public function leaveCommunity (LeaveCommunityRequest $request) {
         $data = $request->input("data.attributes");
         $user_id = $data['user_id'];
@@ -310,7 +200,7 @@ class CommunityController extends Controller
         if ($joinCommunity) {
             $joinCommunity->delete();
             // Decrementar num_persons de la tabla communities
-            $community = Community::whereId($community_id)->first();  //Buscamos la comunidad
+            $community = Community::whereId($community_id)->first();
             $community->decrement('num_persons');
             return response()->json(['message' => 'Comunidad dejada correctamente','joinComunity' => $community], 200);
         } else {
@@ -318,6 +208,7 @@ class CommunityController extends Controller
         }
     }
 
+    //Update Community
     public function updateCommunity (UpdateCommunityRequest $request) {
         $data = $request->input("data.attributes");
         $userid = $data['user_id'];
@@ -331,10 +222,10 @@ class CommunityController extends Controller
         $game_id = $data['game_id'];
         $game_name = $data['game_name'];
         $game_image = $data['game_image'];
-        $community = Community::whereId($communityid)->first();  //Buscamos la comunidad
+        $community = Community::whereId($communityid)->first();
         if ($community) {
-            Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
-            $user = Auth::user(); // Usuario del token
+            Auth::shouldUse('sanctum');
+            $user = Auth::user();
             if ($user->id != $userid) {
                 if ($user->role === 'admin') {
                     $community->title = $title;
@@ -368,13 +259,14 @@ class CommunityController extends Controller
         return response()->json(['error' => 'No se encontró ninguna comunidad para actualizar'], 404);
     }
 
+    //Update Title Community
     public function updateTitleCommunity (Request $request) {
         $data = $request->input("data.attributes");
         $communityId = $data['community_id'];
         $title = $data['title_new'];
-        $community = Community::whereId($communityId)->first();  //Buscamos la comunidad
-        Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
-        $user = Auth::user(); // Usuario del tokens
+        $community = Community::whereId($communityId)->first();
+        Auth::shouldUse('sanctum');
+        $user = Auth::user();
         if ($user->id !== $community->user_id) {
             $community->title = $title;
             $community->save();
@@ -386,13 +278,14 @@ class CommunityController extends Controller
         }
     }
 
+    //Update Description Community
     public function updateDescriptionCommunity (Request $request) {
         $data = $request->input("data.attributes");
         $communityId = $data['community_id'];
         $description = $data['description_new'];
-        $community = Community::whereId($communityId)->first();  //Buscamos la comunidad
-        Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
-        $user = Auth::user(); // Usuario del tokens
+        $community = Community::whereId($communityId)->first();
+        Auth::shouldUse('sanctum');
+        $user = Auth::user();
         if ($user->id !== $community->user_id) {
             $community->description = $description;
             $community->save();
@@ -404,13 +297,14 @@ class CommunityController extends Controller
         }
     }
 
+    //Update Country Community
     public function updateCountryCommunity (Request $request) {
         $data = $request->input("data.attributes");
         $communityId = $data['community_id'];
         $country = $data['country_new'];
-        $community = Community::whereId($communityId)->first();  //Buscamos la comunidad
-        Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
-        $user = Auth::user(); // Usuario del tokens
+        $community = Community::whereId($communityId)->first();
+        Auth::shouldUse('sanctum');
+        $user = Auth::user();
         if ($user->id !== $community->user_id) {
             $community->country = $country;
             $community->save();
@@ -422,13 +316,14 @@ class CommunityController extends Controller
         }
     }
 
+    //Update Language Community
     public function updateLanguageCommunity (Request $request) {
         $data = $request->input("data.attributes");
         $communityId = $data['community_id'];
         $language = $data['language_new'];
-        $community = Community::whereId($communityId)->first();  //Buscamos la comunidad
-        Auth::shouldUse('sanctum'); // Indicar a Laravel que utilice el guard 'sanctum'
-        $user = Auth::user(); // Usuario del tokens
+        $community = Community::whereId($communityId)->first();
+        Auth::shouldUse('sanctum');
+        $user = Auth::user();
         if ($user->id !== $community->user_id) {
             $community->language = $language;
             $community->save();
@@ -440,6 +335,7 @@ class CommunityController extends Controller
         }
     }
 
+    //Delete Community
     public function deleteCommunity (DeleteCommunityRequest $request) {
         $data = $request->input("data.attributes");
         $id = $data['id'];
@@ -447,7 +343,7 @@ class CommunityController extends Controller
         if ($community) {
             Comment::where('community_id', $id)->delete();  //Primero borramos todos los comentarios
             JoinCommunity::where('community_id', $id)->delete();  //Segundo borramos los joinCommunities
-            $community->delete();   //Despues borramos la comunidad
+            $community->delete();  //Despues borramos la comunidad
             return response()->json(['message' => 'Comunidad borrada correctamente','communidad' => $community], 200);
         } else {
             return response()->json(['error' => 'No se encontró ninguna comunidad para borrar'], 404);

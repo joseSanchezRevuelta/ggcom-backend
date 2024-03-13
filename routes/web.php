@@ -17,34 +17,35 @@ use App\Http\Controllers\CommentController;
 */
 
 //COMMUNITIES
-Route::get('communities', [CommunityController::class,'getCommunities']);   //
+Route::get('communities', [CommunityController::class,'getCommunities']);
 
-Route::get('searchcommunities', [CommunityController::class,'getSearchCommunities']);   //
+Route::get('searchcommunities', [CommunityController::class,'getSearchCommunities']);
 
-Route::get('searchusers', [UserController::class,'getSearchUsers']);   //
+Route::get('community', [CommunityController::class,'getCommunity']);
 
-Route::get('community', [CommunityController::class,'getCommunity']);   //
+Route::get('comments', [CommentController::class,'getComments']);
 
-Route::get('comments', [CommentController::class,'getComments']);   //
+//USERS
+Route::get('checkuser', [UserController::class,'checkUser']);
 
-Route::get('checkuser', [UserController::class,'checkUser']);   //
+Route::get('searchusers', [UserController::class,'getSearchUsers']);
 
 // Rutas protegidas
 Route::middleware('auth.sanctum')->group(function () {
     //COMMUNNITIES
     Route::get('geteditcommunity', [CommunityController::class,'getEditCommunity']);
 
-    Route::get('myjoincommunities', [CommunityController::class,'getMyJoinCommunities']);
     //JOINCOMMUNITY
+    Route::get('getjoincommunity', [CommunityController::class,'getJoinCommunity']);
+    
+    Route::get('myjoincommunities', [CommunityController::class,'getMyJoinCommunities']);
+    
     Route::get('mycreatedcommunities', [CommunityController::class,'getCreatedCommunities']);
 
-    Route::get('getjoincommunity', [CommunityController::class,'getJoinCommunity']);
     //PROFILE
     Route::get('profile', [UserController::class,'profile']);
 
     //ADMIN
     Route::get('getusers', [UserController::class,'getUsers']);
-
-
 });
 
