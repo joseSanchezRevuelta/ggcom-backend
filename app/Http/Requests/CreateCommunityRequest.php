@@ -24,7 +24,7 @@ class CreateCommunityRequest extends FormRequest
         return [
             "data.attributes.user_id"=>"required",
             "data.attributes.title"=>"required|max:100",
-            "data.attributes.description"=>"max:200",
+            // "data.attributes.description"=>"max:200",
             "data.attributes.country"=>"required",
             "data.attributes.flag"=>"required",
             "data.attributes.language"=>"required",
